@@ -15,20 +15,30 @@
  *  along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef DEFINES_H
-#define DEFINES_H
+#ifndef BACKUPPROGRESSWORKER_H
+#define BACKUPPROGRESSWORKER_H
 
-#include <QtCore/QString>
-#include <QtCore/QVector>
+#include <QtCore/QFileInfo>
+#include <QtCore/QObject>
+#include "utils/copyhelper.h"
 
-struct BackupConfigObject{
-    QString id;
-    QString name;
-    QString lastBackupTime;
-    QString srcPath;
-    QString dstPath;
+class BackupProgressWorker : public QObject
+{
+    Q_OBJECT
+
+public:
+    BackupProgressWorker(const QString &srcPath, const QString &dstPath, const CopyHelper::CopyMode &copyMode);
+
+signals:
+    void backupFinished();
+
+public slots:
+    void startBackup();
+
+private:
+    QFileInfo m_srcFileInfo;
+    QFileInfo m_dstFileInfo;
+    CopyHelper::CopyMode m_copyMode;
 };
 
-typedef QVector<BackupConfigObject> BackupConfigDatas;
-
-#endif // DEFINES_H
+#endif // BACKUPPROGRESSWORKER_H

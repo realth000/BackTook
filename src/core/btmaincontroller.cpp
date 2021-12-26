@@ -16,9 +16,8 @@
  */
 
 #include "btmaincontroller.h"
-#include "utils/copyhelper.h"
 
 BTMainController::BTMainController(QObject *parent) : QObject(parent)
 {
-    CopyHelper::copyDirectory("C:/QtProjects/0/test", "C:/QtProjects/0/testdst", CopyHelper::CopyMode::Force);
+//    CopyHelper::copyDirectory("C:/QtProjects/0/test", "C:/QtProjects/0/testdst", CopyHelper::CopyMode::Force);
 }

@@ -13,8 +13,9 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-add_subdirectory(include)
-add_subdirectory(utils)
-add_subdirectory(core)
-add_subdirectory(cli)
-add_subdirectory(gui)
+cmake_minimum_required(VERSION 3.13)
+
+set(CLI_RESOURCES backtookcli.cpp)
+
+# NOTE: no PRIVATE here
+add_executable(backtookcli backtookcli.cpp)

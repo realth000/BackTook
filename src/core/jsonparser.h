@@ -21,6 +21,7 @@
 #include <QtCore/QFile>
 #include <QtCore/QJsonDocument>
 #include <QtCore/QJsonObject>
+#include "defines.h"
 
 #define BACKUP_JSON_KEY_ID   "Id"
 #define BACKUP_JSON_KEY_NAME "Name"
@@ -28,22 +29,13 @@
 #define BACKUP_JSON_KEY_SRC  "SourcePath"
 #define BACKUP_JSON_KEY_DST  "DestinationPath"
 
-struct BackupConfigObject{
-    QString id;
-    QString name;
-    QString lastBackupTime;
-    QString srcPath;
-    QString dstPath;
-};
-
-typedef QVector<BackupConfigObject> BackupConfigDatas;
-
 class JsonParser
 {
 public:
     static bool saveBackupConfigJsonToFile(const QString &filePath, const BackupConfigDatas &backupConfigJson);
     static bool saveBackupConfigJsonToFile(QFile &file, const BackupConfigDatas &backupConfigJson);
     static void loadBackupConfigJsonFromFile(const QString &filePath, BackupConfigDatas *backupConfigJson);
+    static QString backupConfigToString(const BackupConfigDatas &backupConfigJson);
 };
 
 #endif // JSONPARSER_H

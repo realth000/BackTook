@@ -18,8 +18,11 @@
 #ifndef BTMAINWINDOW_H
 #define BTMAINWINDOW_H
 
+#include <QtWidgets/QCheckBox>
 #include <QtWidgets/QMainWindow>
+
 #include "core/btmaincontroller.h"
+#include "defines.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class BTMainWindow; }
@@ -36,5 +39,22 @@ public:
 private:
     Ui::BTMainWindow *ui;
     BTMainController *m_controller;
+    BackupConfigDatas *m_backupConfigs;
+
+    QWidget* getCheckBox();
+    QVector<QCheckBox *> *m_backupChBVector;  // Store QCheckBox in TableWidget
+    int m_bakChBCheckedCount;
+
+    void loadConfig();
+    void initConnection();
+    void initUI();
+    void initWindow();
+    void initBackupTable();
+    void loadBackupConfigToTable();
+
+private slots:
+    void startBackupProgress();
+    void updateBackupConfigChecks(const int &state);
+
 };
 #endif // BTMAINWINDOW_H

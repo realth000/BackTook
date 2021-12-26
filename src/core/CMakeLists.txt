@@ -16,3 +16,4 @@
 target_sources(BackTook PRIVATE main.cpp)
 target_sources(BackTook PRIVATE btmaincontroller.h btmaincontroller.cpp)
 target_sources(BackTook PRIVATE jsonparser.h jsonparser.cpp)
+target_sources(BackTook PRIVATE backupprogressworker.h backupprogressworker.cpp)
