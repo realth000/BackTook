@@ -64,7 +64,8 @@ void JsonParser::loadBackupConfigJsonFromFile(const QString &filePath, BackupCon
     QJsonDocument configJsonDoc;
     QJsonObject configJsonObject;
     QJsonParseError configJsonError;
-    configJsonDoc = QJsonDocument::fromJson(configFile.readAll(), &configJsonError);
+    QString readStr = configFile.readAll();
+    configJsonDoc = QJsonDocument::fromJson(readStr.toUtf8(), &configJsonError);
     if(configJsonError.error != QJsonParseError::NoError){
         qCritical("JsonParser: json file parse error: %s, ", qUtf8Printable(filePath), qUtf8Printable(configJsonError.errorString()));
         return;
@@ -77,9 +78,27 @@ void JsonParser::loadBackupConfigJsonFromFile(const QString &filePath, BackupCon
         obj.id = configJsonSingleObject.value(QStringLiteral(BACKUP_JSON_KEY_ID)).toString();
         obj.name = configJsonSingleObject.value(QStringLiteral(BACKUP_JSON_KEY_NAME)).toString();
         obj.lastBackupTime = configJsonSingleObject.value(QStringLiteral(BACKUP_JSON_KEY_TIME)).toString();
-        obj.srcPath = configJsonSingleObject.value(QStringLiteral(BACKUP_JSON_KEY_SRC)).toString();
+        obj.srcPath = configJsonSingleObject.value(QStringLiteral("SourcePath")).toString();
         obj.dstPath = configJsonSingleObject.value(QStringLiteral(BACKUP_JSON_KEY_DST)).toString();
         backupConfigJson->append(obj);
     }
     configFile.close();
+}
+
+QString JsonParser::backupConfigToString(const BackupConfigDatas &backupConfigJson)
+{
+    QString ret;
+    for(const BackupConfigObject &backupObj : backupConfigJson){
+        ret += backupObj.id       + "," +
+               backupObj.name     + "," +
+               backupObj.srcPath  + "," +
+               backupObj.dstPath  + "," +
+               backupObj.lastBackupTime;
+#ifdef Q_OS_WINDOWS
+        ret += "\r\n";
+#else
+        ret += "\n";
+#endif
+    }
+    return ret;
 }

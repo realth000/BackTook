@@ -20,6 +20,7 @@
 
 #include <QtWidgets/QMainWindow>
 #include "core/btmaincontroller.h"
+#include "defines.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class BTMainWindow; }
@@ -32,9 +33,19 @@ class BTMainWindow : public QMainWindow
 public:
     BTMainWindow(QWidget *parent = nullptr);
     ~BTMainWindow();
+    void loadConfig();
+    void initConnection();
+    void initUI();
 
 private:
     Ui::BTMainWindow *ui;
     BTMainController *m_controller;
+    BackupConfigDatas *m_backupConfigs;
+
+    void initBackupConfigTableWidget();
+
+private slots:
+    void startBackupProgress();
+
 };
 #endif // BTMAINWINDOW_H

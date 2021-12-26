@@ -18,6 +18,17 @@
 #ifndef DEFINES_H
 #define DEFINES_H
 
+#include <QtCore/QString>
+#include <QtCore/QVector>
 
+struct BackupConfigObject{
+    QString id;
+    QString name;
+    QString lastBackupTime;
+    QString srcPath;
+    QString dstPath;
+};
+
+typedef QVector<BackupConfigObject> BackupConfigDatas;
 
 #endif // DEFINES_H
