@@ -18,7 +18,9 @@
 #ifndef BTMAINWINDOW_H
 #define BTMAINWINDOW_H
 
+#include <QtWidgets/QCheckBox>
 #include <QtWidgets/QMainWindow>
+
 #include "core/btmaincontroller.h"
 #include "defines.h"
 
@@ -33,19 +35,26 @@ class BTMainWindow : public QMainWindow
 public:
     BTMainWindow(QWidget *parent = nullptr);
     ~BTMainWindow();
-    void loadConfig();
-    void initConnection();
-    void initUI();
 
 private:
     Ui::BTMainWindow *ui;
     BTMainController *m_controller;
     BackupConfigDatas *m_backupConfigs;
 
-    void initBackupConfigTableWidget();
+    QWidget* getCheckBox();
+    QVector<QCheckBox *> *m_backupChBVector;  // Store QCheckBox in TableWidget
+    int m_bakChBCheckedCount;
+
+    void loadConfig();
+    void initConnection();
+    void initUI();
+    void initWindow();
+    void initBackupTable();
+    void loadBackupConfigToTable();
 
 private slots:
     void startBackupProgress();
+    void updateBackupConfigChecks(const int &state);
 
 };
 #endif // BTMAINWINDOW_H
