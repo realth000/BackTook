@@ -42,7 +42,7 @@ if(WIN32)
 endif()
 
 # Compile options
-if(${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     add_compile_options("$<$<C_COMPILER_ID:MSVC>:/utf-8>")
     add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
 #elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
