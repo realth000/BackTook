@@ -35,6 +35,7 @@ signals:
 
 public slots:
     void startBackup();
+    void terminateBackup();
 
 private:
     QFileInfo m_srcFileInfo;

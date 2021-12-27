@@ -11,6 +11,7 @@ BTBackupProgressDialog::BTBackupProgressDialog(QWidget *parent) :
 {
     ui->setupUi(this);
     initUI();
+    initConnection();
 }
 
 BTBackupProgressDialog::~BTBackupProgressDialog()
@@ -44,14 +45,15 @@ void BTBackupProgressDialog::backupFinished()
 
 void BTBackupProgressDialog::initUI()
 {
-    this->setMinimumSize(600, 500);
+    this->setFixedWidth(900);
+    this->setMinimumHeight(600);
     ui->logTextEdit->setReadOnly(true);
 }
 
 void BTBackupProgressDialog::initConnection()
 {
     connect(ui->swithStatePushButton, &QPushButton::clicked, this, &BTBackupProgressDialog::swithState);
-    connect(ui->cancelPushButton, &QPushButton::clicked, this, &BTBackupProgressDialog::cancel);
+    connect(ui->terminatePushButton, &QPushButton::clicked, this, &BTBackupProgressDialog::terminate);
 }
 
 void BTBackupProgressDialog::updateSuccessLog(const QString &filePath)
@@ -78,7 +80,9 @@ void BTBackupProgressDialog::swithState()
 }
 
 // TODO: Stop and cancel.
-void BTBackupProgressDialog::cancel()
+void BTBackupProgressDialog::terminate()
 {
-
+    emit terminateBackup();
+    ui->hintLabel->setText("已停止");
+    ui->logTextEdit->append("已停止");
 }

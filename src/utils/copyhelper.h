@@ -41,16 +41,19 @@ class CopyHelper : public QObject
     Q_OBJECT
 
 public:
+    CopyHelper(QObject *parent = nullptr);
     void setCopyMode(const CopyMode &copyMode);
     bool copyFile(const QString &srcFilePath, const QString &dstFilePath, const CopyMode &copyMode);
     void copyDirectory(const QString &srcDirPath, const QString &dstDirPath, const CopyMode &copyMode);
     static void checkDirectoryInfo(const QString &directoryPath, qint64 &fileCount, qint64 &totalSize);
+    void stopCopy();
 
 signals:
     void fileCopied(QString filePath, bool copyResult, QString errorMessage = "");
 
 private:
     CopyMode m_copyMode;
+    bool m_stopCopy;
 
     void criticalLogger(const QString &logBody, const QString &filePath);
 };

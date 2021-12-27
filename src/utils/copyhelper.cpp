@@ -22,11 +22,21 @@
 #include <QThread>
 #include <QDebug>
 
+CopyHelper::CopyHelper(QObject *parent)
+    : QObject(parent),
+      m_stopCopy(false)
+{
+
+}
+
 bool CopyHelper::copyFile(const QString &srcFilePath, const QString &dstFilePath, const CopyMode &copyMode)
 {
 #if 0
     QThread::sleep(1);
 #endif
+    if(m_stopCopy){
+        return true;
+    }
     bool ret = false;
     if(!QFile::exists(srcFilePath)){
         criticalLogger(QStringLiteral("source file not exists"), srcFilePath);
@@ -50,6 +60,9 @@ bool CopyHelper::copyFile(const QString &srcFilePath, const QString &dstFilePath
 
 void CopyHelper::copyDirectory(const QString &srcDirPath, const QString &dstDirPath, const CopyMode &copyMode)
 {
+    if(m_stopCopy){
+        return;
+    }
     QDir sourceDir(srcDirPath);
     if(!sourceDir.exists()){
         criticalLogger(QStringLiteral("source directory not exists"), srcDirPath);
@@ -102,6 +115,11 @@ void CopyHelper::checkDirectoryInfo(const QString &directoryPath, qint64 &fileCo
     if(it.fileInfo().isFile()){
         fileCount++;
     }
+}
+
+void CopyHelper::stopCopy()
+{
+    m_stopCopy = true;
 }
 
 void CopyHelper::criticalLogger(const QString &logBody, const QString &filePath)

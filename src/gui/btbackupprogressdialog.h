@@ -15,6 +15,9 @@ public:
     explicit BTBackupProgressDialog(QWidget *parent = nullptr);
     ~BTBackupProgressDialog();
 
+signals:
+    void terminateBackup();
+
 public slots:
     void setHint(const QString &hint);
     void setFileCount(const qint64 &filecount);
@@ -35,7 +38,7 @@ private:
 
 private slots:
     void swithState();
-    void cancel();
+    void terminate();
 
 };
 

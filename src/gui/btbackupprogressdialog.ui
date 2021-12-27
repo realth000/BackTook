@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>600</width>
-    <height>500</height>
+    <width>900</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,7 +23,7 @@
       <widget class="QLabel" name="hintLabel">
        <property name="minimumSize">
         <size>
-         <width>120</width>
+         <width>80</width>
          <height>0</height>
         </size>
        </property>
@@ -59,7 +59,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="cancelPushButton">
+      <widget class="QPushButton" name="terminatePushButton">
        <property name="minimumSize">
         <size>
          <width>30</width>
@@ -158,8 +158,8 @@
      </property>
      <property name="sizeHint" stdset="0">
       <size>
-       <width>20</width>
-       <height>40</height>
+       <width>0</width>
+       <height>10</height>
       </size>
      </property>
     </spacer>

@@ -187,6 +187,7 @@ QWidget* BTMainWindow::getCheckBox()
 
 void BTMainWindow::startBackupProgress()
 {
+    bool backupCanceled = false;
     int pos = 0;
     QString srcPath;
     QString dstPath;
@@ -195,6 +196,7 @@ void BTMainWindow::startBackupProgress()
     BTBackupProgressDialog *progressDialog = new BTBackupProgressDialog(this);
     connect(this, &BTMainWindow::sendBackupProgressHint, progressDialog, &BTBackupProgressDialog::setHint);
     connect(this, &BTMainWindow::sendBackupProgressFileCount, progressDialog, &BTBackupProgressDialog::setFileCount);
+    connect(progressDialog, &BTBackupProgressDialog::terminateBackup, this, [&backupCanceled](){backupCanceled = true;});
     progressDialog->show();
 
     emit sendBackupProgressHint("计算文件中");
@@ -212,6 +214,9 @@ void BTMainWindow::startBackupProgress()
     pos = 0;
     for(const QCheckBox *checkBox : *m_backupChBVector){
         if(checkBox->isChecked()){
+            if(backupCanceled){
+                return;
+            }
             srcPath = ui->backupTable->item(pos, 2)->text();
             dstPath = ui->backupTable->item(pos, 3)->text();
             const QFileInfo sourceInfo(srcPath);
@@ -227,13 +232,15 @@ void BTMainWindow::startBackupProgress()
 
             QThread *backupThread = new QThread();
             BackupProgressWorker *backupWorker = new BackupProgressWorker(srcPath, dstPath, CopyMode::Force);
+            connect(progressDialog, &BTBackupProgressDialog::terminateBackup, backupThread, &QThread::quit);
+            connect(progressDialog, &BTBackupProgressDialog::terminateBackup, backupWorker, &BackupProgressWorker::terminateBackup, Qt::DirectConnection);
 
             connect(backupThread, &QThread::started, backupWorker, &BackupProgressWorker::startBackup);
             connect(backupWorker, &BackupProgressWorker::backupFinished, backupThread, &QThread::quit);
             connect(backupThread, &QThread::finished, backupThread, &QThread::deleteLater);
             connect(backupThread, &QThread::finished, backupWorker, &BackupProgressWorker::deleteLater);
 
-            connect(backupWorker, &BackupProgressWorker::fileBakcup, progressDialog, &BTBackupProgressDialog::updateBackupProgress);
+            connect(backupWorker, &BackupProgressWorker::fileBakcup, progressDialog, &BTBackupProgressDialog::updateBackupProgress, Qt::BlockingQueuedConnection);
             connect(backupWorker, &BackupProgressWorker::backupFinished, this,
                     [&taskCount, progressDialog]()
                     {

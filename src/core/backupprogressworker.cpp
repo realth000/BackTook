@@ -41,3 +41,8 @@ void BackupProgressWorker::startBackup()
     }
     emit backupFinished();
 }
+
+void BackupProgressWorker::terminateBackup()
+{
+    m_copyHelper.stopCopy();
+}
