@@ -18,7 +18,9 @@
 #ifndef COPYHELPER_H
 #define COPYHELPER_H
 
+#include <QtCore/QObject>
 #include <QtCore/QDir>
+#include <QtCore/QDirIterator>
 #include <QtCore/QFile>
 
 #ifndef NATIVE_SEPARATOR
@@ -29,19 +31,28 @@
 #endif // #ifdef Q_OS_WINDOWS
 #endif // #ifndef NATIVE_SEPARATOR
 
-class CopyHelper
-{
-public:
-    enum class CopyMode : int {
-        Normal = 0,
-        Force
-    };
+enum class CopyMode : int {
+    Normal = 0,
+    Force
+};
 
-    static bool copyFile(const QString &srcFilePath, const QString &dstFilePath, const CopyMode &copyMode);
-    static void copyDirectory(const QString &srcDirPath, const QString &dstDirPath, const CopyMode &copyMode);
+class CopyHelper : public QObject
+{
+    Q_OBJECT
+
+public:
+    void setCopyMode(const CopyMode &copyMode);
+    bool copyFile(const QString &srcFilePath, const QString &dstFilePath, const CopyMode &copyMode);
+    void copyDirectory(const QString &srcDirPath, const QString &dstDirPath, const CopyMode &copyMode);
+    static void checkDirectoryInfo(const QString &directoryPath, qint64 &fileCount, qint64 &totalSize);
+
+signals:
+    void fileCopied(QString filePath, bool copyResult, QString errorMessage = "");
 
 private:
-    static void criticalLogger(const QString &logBody, const QString &filePath);
+    CopyMode m_copyMode;
+
+    void criticalLogger(const QString &logBody, const QString &filePath);
 };
 
 #endif // COPYHELPER_H

@@ -27,10 +27,11 @@ class BackupProgressWorker : public QObject
     Q_OBJECT
 
 public:
-    BackupProgressWorker(const QString &srcPath, const QString &dstPath, const CopyHelper::CopyMode &copyMode);
+    BackupProgressWorker(const QString &srcPath, const QString &dstPath, const CopyMode &copyMode);
 
 signals:
     void backupFinished();
+    void fileBakcup(QString filePath, bool copyResult, QString errorMessage);
 
 public slots:
     void startBackup();
@@ -38,7 +39,7 @@ public slots:
 private:
     QFileInfo m_srcFileInfo;
     QFileInfo m_dstFileInfo;
-    CopyHelper::CopyMode m_copyMode;
+    CopyHelper m_copyHelper;
 };
 
 #endif // BACKUPPROGRESSWORKER_H

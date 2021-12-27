@@ -24,6 +24,7 @@ BTAddBackupConfigDialog::~BTAddBackupConfigDialog()
 
 void BTAddBackupConfigDialog::initUI()
 {
+    this->setMinimumSize(500, 250);
     this->setStyleSheet(QssInstaller::installFromFile(":/stylesheet/btaddbackupconfigdialog.css"));
     ui->srcPathLineEdit->setReadOnly(true);
     ui->dstPathLineEdit->setReadOnly(true);

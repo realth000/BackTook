@@ -22,22 +22,22 @@
 #include <QDebug>
 
 
-BackupProgressWorker::BackupProgressWorker(const QString &srcPath, const QString &dstPath, const CopyHelper::CopyMode &copyMode)
+BackupProgressWorker::BackupProgressWorker(const QString &srcPath, const QString &dstPath, const CopyMode &copyMode)
     : m_srcFileInfo(srcPath),
-      m_dstFileInfo(dstPath),
-      m_copyMode(copyMode)
+      m_dstFileInfo(dstPath)
 {
-
+    m_copyHelper.setCopyMode(copyMode);
+    connect(&m_copyHelper, &CopyHelper::fileCopied, this, &BackupProgressWorker::fileBakcup);
 }
 
 void BackupProgressWorker::startBackup()
 {
     if(m_srcFileInfo.isFile()){
         // TODO: Save CopyMode in config
-        CopyHelper::copyFile(m_srcFileInfo.absoluteFilePath(), m_dstFileInfo.absoluteFilePath(), CopyHelper::CopyMode::Force);
+        m_copyHelper.copyFile(m_srcFileInfo.absoluteFilePath(), m_dstFileInfo.absoluteFilePath(), CopyMode::Force);
     }
     else if(m_srcFileInfo.isDir()){
-        CopyHelper::copyDirectory(m_srcFileInfo.absoluteFilePath(), m_dstFileInfo.absoluteFilePath(), CopyHelper::CopyMode::Force);
+        m_copyHelper.copyDirectory(m_srcFileInfo.absoluteFilePath(), m_dstFileInfo.absoluteFilePath(), CopyMode::Force);
     }
     emit backupFinished();
 }

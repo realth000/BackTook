@@ -15,3 +15,4 @@
 
 target_sources(BackTook PRIVATE btmainwindow.h btmainwindow.cpp btmainwindow.ui)
 target_sources(BackTook PRIVATE btaddbackupconfigdialog.h btaddbackupconfigdialog.cpp btaddbackupconfigdialog.ui)
+target_sources(BackTook PRIVATE btbackupprogressdialog.h btbackupprogressdialog.cpp btbackupprogressdialog.ui)

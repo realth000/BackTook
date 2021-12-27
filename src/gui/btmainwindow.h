@@ -18,12 +18,12 @@
 #ifndef BTMAINWINDOW_H
 #define BTMAINWINDOW_H
 
+#include <QtCore/QDirIterator>
 #include <QtWidgets/QCheckBox>
 #include <QtWidgets/QMainWindow>
 
 #include "core/btmaincontroller.h"
 #include "defines.h"
-#include "gui/btaddbackupconfigdialog.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class BTMainWindow; }
@@ -36,6 +36,10 @@ class BTMainWindow : public QMainWindow
 public:
     BTMainWindow(QWidget *parent = nullptr);
     ~BTMainWindow();
+
+signals:
+    void sendBackupProgressHint(QString hint);
+    void sendBackupProgressFileCount(qint64 fileCount);
 
 public slots:
     void addBackupConfig(const QString &name, const QString &srcPath, const QString &dstPath);

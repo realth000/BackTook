@@ -25,6 +25,8 @@
 
 #include "core/backupprogressworker.h"
 #include "core/jsonparser.h"
+#include "gui/btaddbackupconfigdialog.h"
+#include "gui/btbackupprogressdialog.h"
 
 #define WINDOW_MIN_WIDTH  1000
 #define WINDOW_MIN_HEIGHT 700
@@ -188,6 +190,26 @@ void BTMainWindow::startBackupProgress()
     int pos = 0;
     QString srcPath;
     QString dstPath;
+    qint64 fileCount = 0;
+    qint64 totalSize = 0;
+    BTBackupProgressDialog *progressDialog = new BTBackupProgressDialog(this);
+    connect(this, &BTMainWindow::sendBackupProgressHint, progressDialog, &BTBackupProgressDialog::setHint);
+    connect(this, &BTMainWindow::sendBackupProgressFileCount, progressDialog, &BTBackupProgressDialog::setFileCount);
+    progressDialog->show();
+
+    emit sendBackupProgressHint("计算文件中");
+    int taskCount = 0;
+    for(const QCheckBox *checkBox : *m_backupChBVector){
+        if(checkBox->isChecked()){
+            CopyHelper::checkDirectoryInfo(ui->backupTable->item(pos, 2)->text(), fileCount, totalSize);
+            taskCount++;
+         }
+        pos++;
+    }
+    emit sendBackupProgressFileCount(fileCount);
+
+    emit sendBackupProgressHint("备份中");
+    pos = 0;
     for(const QCheckBox *checkBox : *m_backupChBVector){
         if(checkBox->isChecked()){
             srcPath = ui->backupTable->item(pos, 2)->text();
@@ -204,12 +226,22 @@ void BTMainWindow::startBackupProgress()
             }
 
             QThread *backupThread = new QThread();
-            BackupProgressWorker *backupWorker = new BackupProgressWorker(srcPath, dstPath, CopyHelper::CopyMode::Force);
+            BackupProgressWorker *backupWorker = new BackupProgressWorker(srcPath, dstPath, CopyMode::Force);
 
             connect(backupThread, &QThread::started, backupWorker, &BackupProgressWorker::startBackup);
             connect(backupWorker, &BackupProgressWorker::backupFinished, backupThread, &QThread::quit);
             connect(backupThread, &QThread::finished, backupThread, &QThread::deleteLater);
             connect(backupThread, &QThread::finished, backupWorker, &BackupProgressWorker::deleteLater);
+
+            connect(backupWorker, &BackupProgressWorker::fileBakcup, progressDialog, &BTBackupProgressDialog::updateBackupProgress);
+            connect(backupWorker, &BackupProgressWorker::backupFinished, this,
+                    [&taskCount, progressDialog]()
+                    {
+                        taskCount--;
+                        if(taskCount == 0){
+                            progressDialog->backupFinished();
+                        }
+                    });
 
             backupWorker->moveToThread(backupThread);
             backupThread->start();
@@ -245,4 +277,3 @@ void BTMainWindow::deleteConfig()
     }
     // TODO: Unfreeze after delete.
 }
-
