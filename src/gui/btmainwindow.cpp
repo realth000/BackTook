@@ -37,7 +37,8 @@ BTMainWindow::BTMainWindow(QWidget *parent)
       m_controller(new BTMainController(this)),
       m_backupConfigs(new BackupConfigDatas),
       m_backupChBVector(new QVector<QCheckBox *>),
-      m_bakChBCheckedCount(0)
+      m_bakChBCheckedCount(0),
+      m_backupConfigSavePath(QApplication::applicationDirPath() + NATIVE_SEPARATOR + "backupConfig.json")
 {
     ui->setupUi(this);
     loadConfig();
@@ -53,6 +54,33 @@ BTMainWindow::~BTMainWindow()
     delete m_backupChBVector;
 }
 
+void BTMainWindow::addBackupConfig(const QString &name, const QString &srcPath, const QString &dstPath)
+{
+    addBackupConfigToDatas(name, srcPath, dstPath);
+    addBackupConfigToTable(name ,srcPath, dstPath);
+}
+
+void BTMainWindow::addBackupConfigToTable(const QString &name, const QString &srcPath, const QString &dstPath)
+{
+    const int pos = ui->backupTable->rowCount();
+    ui->backupTable->insertRow(pos);
+    ui->backupTable->setRowHeight(pos, BACKUP_TABLE_ROW_HEIGHT);
+    ui->backupTable->setCellWidget(pos, 0, getCheckBox());
+    ui->backupTable->setItem(pos, 1, new QTableWidgetItem(name));
+    ui->backupTable->setItem(pos, 2, new QTableWidgetItem(srcPath));
+    ui->backupTable->setItem(pos, 3, new QTableWidgetItem(dstPath));
+
+}
+
+void BTMainWindow::deleteBackupConfig(const int &pos)
+{
+    delete (*m_backupChBVector)[pos];
+    m_backupChBVector->removeAt(pos);
+    ui->backupTable->removeRow(pos);
+
+    m_backupConfigs->removeAt(pos);
+}
+
 void BTMainWindow::loadConfig()
 {
     // test
@@ -65,9 +93,9 @@ void BTMainWindow::loadConfig()
     outObj.dstPath = "C:/QtProjects/0/testdst";
     QVector<BackupConfigObject> outVector;
     outVector.append(outObj);
-    JsonParser::saveBackupConfigJsonToFile("C:/QtProjects/0/backupConfig", outVector);
+    JsonParser::saveBackupConfigJsonToFile(m_backupConfigSavePath, outVector);
 #endif
-    JsonParser::loadBackupConfigJsonFromFile("C:/QtProjects/0/backupConfig", m_backupConfigs);
+    JsonParser::loadBackupConfigJsonFromFile(m_backupConfigSavePath, m_backupConfigs);
     qDebug() << "load result:" << JsonParser::backupConfigToString(*m_backupConfigs);
 }
 
@@ -75,6 +103,9 @@ void BTMainWindow::initConnection()
 {
     // startBackupPushButton
     connect(ui->startBackupPushButton, &QPushButton::clicked, this, &BTMainWindow::startBackupProgress);
+    connect(ui->saveBackupPushButton, &QPushButton::clicked, this, &BTMainWindow::saveConfig);
+    connect(ui->addBackupPushButton, &QPushButton::clicked, this, &BTMainWindow::addConfig);
+    connect(ui->deleteBackupPushButton, &QPushButton::clicked, this, &BTMainWindow::deleteConfig);
 }
 
 void BTMainWindow::initUI()
@@ -119,14 +150,19 @@ void BTMainWindow::initBackupTable()
 void BTMainWindow::loadBackupConfigToTable()
 {
     for(const BackupConfigObject &configObj : *m_backupConfigs){
-        const int insertPosition = ui->backupTable->rowCount();
-        ui->backupTable->insertRow(insertPosition);
-        ui->backupTable->setRowHeight(insertPosition, BACKUP_TABLE_ROW_HEIGHT);
-        ui->backupTable->setCellWidget(insertPosition, 0, getCheckBox());
-        ui->backupTable->setItem(insertPosition, 1, new QTableWidgetItem(configObj.name));
-        ui->backupTable->setItem(insertPosition, 2, new QTableWidgetItem(configObj.srcPath));
-        ui->backupTable->setItem(insertPosition, 3, new QTableWidgetItem(configObj.dstPath));
+        addBackupConfigToTable(configObj.name, configObj.srcPath, configObj.dstPath);
     }
+}
+
+void BTMainWindow::addBackupConfigToDatas(const QString &name, const QString &srcPath, const QString &dstPath)
+{
+    BackupConfigObject obj;
+    obj.id = QString("-1");
+    obj.name = name;
+    obj.lastBackupTime = "";
+    obj.srcPath = srcPath;
+    obj.dstPath = dstPath;
+    m_backupConfigs->append(obj);
 }
 
 QWidget* BTMainWindow::getCheckBox()
@@ -185,5 +221,28 @@ void BTMainWindow::startBackupProgress()
 void BTMainWindow::updateBackupConfigChecks(const int &state)
 {
     state == 0 ? m_bakChBCheckedCount-- : m_bakChBCheckedCount++;
+}
+
+void BTMainWindow::saveConfig()
+{
+    JsonParser::saveBackupConfigJsonToFile(m_backupConfigSavePath, *m_backupConfigs) ? qInfo("Save config success") : qInfo("Save config failed");
+}
+
+void BTMainWindow::addConfig()
+{
+    BTAddBackupConfigDialog *addConfigDialog = new BTAddBackupConfigDialog(this);
+    connect(addConfigDialog, &BTAddBackupConfigDialog::getAddedBackupConfig, this, &BTMainWindow::addBackupConfig);
+    addConfigDialog->exec();
+}
+
+void BTMainWindow::deleteConfig()
+{
+    // TODO: Freeze before delete.
+    for(int i = 0; i < m_backupChBVector->length(); ++i){
+        if((*m_backupChBVector)[i]->isChecked()){
+            deleteBackupConfig(i);
+        }
+    }
+    // TODO: Unfreeze after delete.
 }
 

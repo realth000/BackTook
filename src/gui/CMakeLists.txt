@@ -14,3 +14,4 @@
 #  along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 target_sources(BackTook PRIVATE btmainwindow.h btmainwindow.cpp btmainwindow.ui)
+target_sources(BackTook PRIVATE btaddbackupconfigdialog.h btaddbackupconfigdialog.cpp btaddbackupconfigdialog.ui)

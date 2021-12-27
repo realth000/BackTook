@@ -33,14 +33,16 @@ bool JsonParser::saveBackupConfigJsonToFile(QFile &file, const BackupConfigDatas
     }
     QJsonDocument configJsonDoc;
     QJsonObject configJsonObject;
+    int id = 0;
     for(const BackupConfigObject &singleConfig : backupConfigJson){
         QJsonObject configJsonSingleObject;
-        configJsonSingleObject.insert(QStringLiteral(BACKUP_JSON_KEY_ID), singleConfig.id);
+        configJsonSingleObject.insert(QStringLiteral(BACKUP_JSON_KEY_ID), id);
         configJsonSingleObject.insert(QStringLiteral(BACKUP_JSON_KEY_NAME), singleConfig.name);
         configJsonSingleObject.insert(QStringLiteral(BACKUP_JSON_KEY_TIME), singleConfig.lastBackupTime);
         configJsonSingleObject.insert(QStringLiteral(BACKUP_JSON_KEY_SRC), singleConfig.srcPath);
         configJsonSingleObject.insert(QStringLiteral(BACKUP_JSON_KEY_DST), singleConfig.dstPath);
-        configJsonObject.insert(singleConfig.id, configJsonSingleObject);
+        configJsonObject.insert(QString::number(id), configJsonSingleObject);
+        id++;
     }
     configJsonDoc.setObject(configJsonObject);
     const QByteArray jsonData = configJsonDoc.toJson();

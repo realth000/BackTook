@@ -23,6 +23,7 @@
 
 #include "core/btmaincontroller.h"
 #include "defines.h"
+#include "gui/btaddbackupconfigdialog.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class BTMainWindow; }
@@ -36,6 +37,9 @@ public:
     BTMainWindow(QWidget *parent = nullptr);
     ~BTMainWindow();
 
+public slots:
+    void addBackupConfig(const QString &name, const QString &srcPath, const QString &dstPath);
+
 private:
     Ui::BTMainWindow *ui;
     BTMainController *m_controller;
@@ -44,6 +48,7 @@ private:
     QWidget* getCheckBox();
     QVector<QCheckBox *> *m_backupChBVector;  // Store QCheckBox in TableWidget
     int m_bakChBCheckedCount;
+    QString m_backupConfigSavePath;
 
     void loadConfig();
     void initConnection();
@@ -51,10 +56,16 @@ private:
     void initWindow();
     void initBackupTable();
     void loadBackupConfigToTable();
+    void addBackupConfigToDatas(const QString &name, const QString &srcPath, const QString &dstPath);
+    void addBackupConfigToTable(const QString &name, const QString &srcPath, const QString &dstPath);
+    void deleteBackupConfig(const int &pos);
 
 private slots:
     void startBackupProgress();
     void updateBackupConfigChecks(const int &state);
+    void saveConfig();
+    void addConfig();
+    void deleteConfig();
 
 };
 #endif // BTMAINWINDOW_H
