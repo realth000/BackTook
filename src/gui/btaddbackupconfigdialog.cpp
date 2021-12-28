@@ -2,14 +2,18 @@
 #include "ui_btaddbackupconfigdialog.h"
 
 #include <QtWidgets/QFileDialog>
+#include "utils/iconinstaller.h"
 #include "utils/qssinstaller.h"
 
-BTAddBackupConfigDialog::BTAddBackupConfigDialog(QWidget *parent) :
+BTAddBackupConfigDialog::BTAddBackupConfigDialog(QWidget *parent, const bool &useLightStyle) :
       QDialog(parent),
       ui(new Ui::BTAddBackupConfigDialog),
       m_addedName(QString()),
       m_addedSrcPath(QString()),
-      m_addedDstPath(QString())
+      m_addedDstPath(QString()),
+      m_useLightStyle(useLightStyle),
+      m_darkPushButtonStyle(new DarkPushButtonStyle),
+      m_lightPushButtonStyle(new LightPushButtonStyle)
 
 {
     ui->setupUi(this);
@@ -25,10 +29,31 @@ BTAddBackupConfigDialog::~BTAddBackupConfigDialog()
 void BTAddBackupConfigDialog::initUI()
 {
     this->setMinimumSize(500, 250);
-    this->setStyleSheet(QssInstaller::installFromFile(":/stylesheet/btaddbackupconfigdialog.css"));
     ui->srcPathLineEdit->setReadOnly(true);
     ui->dstPathLineEdit->setReadOnly(true);
     ui->hintLabel->setVisible(false);
+    if(m_useLightStyle){
+        this->setStyleSheet(QssInstaller::installFromFile(":/stylesheet/btaddbackupconfigdialog_light.css"));
+        IconInstaller::installPushButtonIcon(ui->okPushButton, ":/pic/yes2.png");
+        IconInstaller::installPushButtonIcon(ui->cancelPushButton, ":/pic/cancel2.png");
+        IconInstaller::installPushButtonIcon(ui->selectSrcPathPushButton, ":/pic/openfolder2.png");
+        IconInstaller::installPushButtonIcon(ui->selectDstPathPushButton, ":/pic/openfolder2.png");
+        ui->okPushButton->setStyle(m_lightPushButtonStyle);
+        ui->cancelPushButton->setStyle(m_lightPushButtonStyle);
+        ui->selectSrcPathPushButton->setStyle(m_lightPushButtonStyle);
+        ui->selectDstPathPushButton->setStyle(m_lightPushButtonStyle);
+    }
+    else{
+        this->setStyleSheet(QssInstaller::installFromFile(":/stylesheet/btaddbackupconfigdialog_dark.css"));
+        IconInstaller::installPushButtonIcon(ui->okPushButton, ":/pic/yes.png");
+        IconInstaller::installPushButtonIcon(ui->cancelPushButton, ":/pic/cancel.png");
+        IconInstaller::installPushButtonIcon(ui->selectSrcPathPushButton, ":/pic/openfolder.png");
+        IconInstaller::installPushButtonIcon(ui->selectDstPathPushButton, ":/pic/openfolder.png");
+        ui->okPushButton->setStyle(m_darkPushButtonStyle);
+        ui->cancelPushButton->setStyle(m_darkPushButtonStyle);
+        ui->selectSrcPathPushButton->setStyle(m_darkPushButtonStyle);
+        ui->selectDstPathPushButton->setStyle(m_darkPushButtonStyle);
+    }
 }
 
 void BTAddBackupConfigDialog::initConnection()

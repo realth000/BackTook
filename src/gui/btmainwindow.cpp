@@ -352,7 +352,7 @@ void BTMainWindow::saveBackupConfig()
 
 void BTMainWindow::addConfig()
 {
-    BTAddBackupConfigDialog *addConfigDialog = new BTAddBackupConfigDialog(this);
+    BTAddBackupConfigDialog *addConfigDialog = new BTAddBackupConfigDialog(this, m_useLightStyle);
     connect(addConfigDialog, &BTAddBackupConfigDialog::getAddedBackupConfig, this, &BTMainWindow::addBackupConfig);
     addConfigDialog->exec();
 }

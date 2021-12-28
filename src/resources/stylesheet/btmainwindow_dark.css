@@ -1,4 +1,8 @@
-﻿QMainWindow#BTMainWindow{
+﻿QWidget{
+    font-size: 13px;
+}
+
+QMainWindow#BTMainWindow{
     background-color: #333333;
 }
 

@@ -1,0 +1,19 @@
+﻿QWidget{
+    font-size: 13px;
+}
+
+QDialog#BTAddBackupConfigDialog{
+    background-color: #333333;
+}
+
+QLabel{
+    color: #f0ffff;
+}
+
+
+QLineEdit{
+    color: #f0ffff;
+    border: 1px solid #254158;
+    background-color: #373737;
+    selection-background-color: #254158;
+}
