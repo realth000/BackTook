@@ -14,3 +14,4 @@
 #  along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 target_sources(BackTook PRIVATE stylesheet.qrc)
+target_sources(BackTook PRIVATE pic.qrc)

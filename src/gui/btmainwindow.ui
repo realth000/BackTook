@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1000</width>
-    <height>700</height>
+    <height>500</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -52,7 +52,7 @@
           <property name="minimumSize">
            <size>
             <width>0</width>
-            <height>30</height>
+            <height>40</height>
            </size>
           </property>
           <property name="text">
@@ -65,7 +65,7 @@
           <property name="minimumSize">
            <size>
             <width>0</width>
-            <height>30</height>
+            <height>40</height>
            </size>
           </property>
           <property name="text">
@@ -78,7 +78,7 @@
           <property name="minimumSize">
            <size>
             <width>0</width>
-            <height>30</height>
+            <height>40</height>
            </size>
           </property>
           <property name="text">
@@ -91,7 +91,7 @@
           <property name="minimumSize">
            <size>
             <width>0</width>
-            <height>30</height>
+            <height>40</height>
            </size>
           </property>
           <property name="maximumSize">
@@ -101,7 +101,7 @@
            </size>
           </property>
           <property name="text">
-           <string>删除选中</string>
+           <string>删除</string>
           </property>
          </widget>
         </item>
@@ -140,7 +140,14 @@
        </spacer>
       </item>
       <item>
-       <widget class="QTableWidget" name="backupTable"/>
+       <widget class="QTableWidget" name="backupTable">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>400</height>
+         </size>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>
@@ -152,7 +159,7 @@
       <property name="sizeHint" stdset="0">
        <size>
         <width>18</width>
-        <height>313</height>
+        <height>100</height>
        </size>
       </property>
      </spacer>
@@ -168,8 +175,26 @@
      <height>22</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>外观</string>
+    </property>
+    <addaction name="actionDark"/>
+    <addaction name="actionLight"/>
+   </widget>
+   <addaction name="menu"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionDark">
+   <property name="text">
+    <string>Dark</string>
+   </property>
+  </action>
+  <action name="actionLight">
+   <property name="text">
+    <string>Light</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

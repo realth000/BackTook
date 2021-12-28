@@ -24,6 +24,8 @@
 
 #include "core/btmaincontroller.h"
 #include "defines.h"
+#include "gui/styles/darkstyle.h"
+#include "gui/styles/lightstyle.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class BTMainWindow; }
@@ -53,6 +55,10 @@ private:
     QVector<QCheckBox *> *m_backupChBVector;  // Store QCheckBox in TableWidget
     int m_bakChBCheckedCount;
     QString m_backupConfigSavePath;
+    bool m_useLightStyle;
+    DarkPushButtonStyle *m_darkPushbuttonStyle;
+    LightPushButtonStyle *m_lightPushButtonStyle;
+
 
     void loadConfig();
     void initConnection();
@@ -60,6 +66,7 @@ private:
     void initWindow();
     void initBackupTable();
     void loadBackupConfigToTable();
+    void loadStyles();
     void addBackupConfigToDatas(const QString &name, const QString &srcPath, const QString &dstPath);
     void addBackupConfigToTable(const QString &name, const QString &srcPath, const QString &dstPath, const QString &lastBackupTime = "");
     void deleteBackupConfig(const int &pos);

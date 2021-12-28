@@ -13,6 +13,7 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+add_subdirectory(styles)
 target_sources(BackTook PRIVATE btmainwindow.h btmainwindow.cpp btmainwindow.ui)
 target_sources(BackTook PRIVATE btaddbackupconfigdialog.h btaddbackupconfigdialog.cpp btaddbackupconfigdialog.ui)
 target_sources(BackTook PRIVATE btbackupprogressdialog.h btbackupprogressdialog.cpp btbackupprogressdialog.ui)

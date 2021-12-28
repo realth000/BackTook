@@ -15,3 +15,4 @@
 
 target_sources(BackTook PRIVATE copyhelper.h copyhelper.cpp)
 target_sources(BackTook PRIVATE qssinstaller.h qssinstaller.cpp)
+target_sources(BackTook PRIVATE iconinstaller.h iconinstaller.cpp)

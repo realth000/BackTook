@@ -27,9 +27,11 @@
 #include "core/jsonparser.h"
 #include "gui/btaddbackupconfigdialog.h"
 #include "gui/btbackupprogressdialog.h"
+#include "utils/iconinstaller.h"
+#include "utils/qssinstaller.h"
 
 #define WINDOW_MIN_WIDTH  1000
-#define WINDOW_MIN_HEIGHT 700
+#define WINDOW_MIN_HEIGHT 500
 
 #define BACKUP_TABLE_ROW_HEIGHT 35
 
@@ -40,7 +42,10 @@ BTMainWindow::BTMainWindow(QWidget *parent)
       m_backupConfigs(new BackupConfigDatas),
       m_backupChBVector(new QVector<QCheckBox *>),
       m_bakChBCheckedCount(0),
-      m_backupConfigSavePath(QApplication::applicationDirPath() + NATIVE_SEPARATOR + "backupConfig.json")
+      m_backupConfigSavePath(QApplication::applicationDirPath() + NATIVE_SEPARATOR + "backupConfig.json"),
+      m_useLightStyle(true),
+      m_darkPushbuttonStyle(new DarkPushButtonStyle),
+      m_lightPushButtonStyle(new LightPushButtonStyle)
 {
     ui->setupUi(this);
     loadConfig();
@@ -54,6 +59,8 @@ BTMainWindow::~BTMainWindow()
     delete m_backupConfigs;
     qDeleteAll(*m_backupChBVector);
     delete m_backupChBVector;
+
+    delete m_darkPushbuttonStyle;
 }
 
 void BTMainWindow::addBackupConfig(const QString &name, const QString &srcPath, const QString &dstPath)
@@ -120,6 +127,20 @@ void BTMainWindow::initConnection()
     connect(ui->saveBackupPushButton, &QPushButton::clicked, this, &BTMainWindow::saveConfig);
     connect(ui->addBackupPushButton, &QPushButton::clicked, this, &BTMainWindow::addConfig);
     connect(ui->deleteBackupPushButton, &QPushButton::clicked, this, &BTMainWindow::deleteConfig);
+
+    // Menu
+    connect(ui->actionDark, &QAction::triggered, this,
+            [this]()
+            {
+                this->m_useLightStyle = false;
+                loadStyles();
+            });
+    connect(ui->actionLight, &QAction::triggered, this,
+            [this]()
+            {
+                this->m_useLightStyle = true;
+                loadStyles();
+            });
 }
 
 void BTMainWindow::initUI()
@@ -127,12 +148,16 @@ void BTMainWindow::initUI()
     initWindow();
     initBackupTable();
     loadBackupConfigToTable();
+    loadStyles();
 
 }
 
 void BTMainWindow::initWindow()
 {
     this->setMinimumSize(WINDOW_MIN_WIDTH, WINDOW_MIN_HEIGHT);
+
+    ui->actionDark->setCheckable(true);
+    ui->actionLight->setCheckable(true);
 }
 
 void BTMainWindow::initBackupTable()
@@ -154,12 +179,43 @@ void BTMainWindow::initBackupTable()
     ui->backupTable->horizontalHeader()->setStretchLastSection(true);
     ui->backupTable->horizontalHeader()->setHighlightSections(false);
     ui->backupTable->verticalHeader()->setVisible(false);
+    ui->backupTable->setShowGrid(false);
 }
 
 void BTMainWindow::loadBackupConfigToTable()
 {
     for(const BackupConfigObject &configObj : *m_backupConfigs){
         addBackupConfigToTable(configObj.name, configObj.srcPath, configObj.dstPath, configObj.lastBackupTime);
+    }
+}
+
+void BTMainWindow::loadStyles()
+{
+    if(m_useLightStyle){
+        ui->actionDark->setChecked(false);
+        ui->actionLight->setChecked(true);
+        this->setStyleSheet(QssInstaller::installFromFile(":/stylesheet/btmainwindow_light.css"));
+        IconInstaller::installPushButtonIcon(ui->startBackupPushButton, ":/pic/start2.png");
+        IconInstaller::installPushButtonIcon(ui->saveBackupPushButton, ":/pic/save2.png");
+        IconInstaller::installPushButtonIcon(ui->addBackupPushButton, ":/pic/add2.png");
+        IconInstaller::installPushButtonIcon(ui->deleteBackupPushButton, ":/pic/delete2.png");
+        ui->startBackupPushButton->setStyle(m_lightPushButtonStyle);
+        ui->saveBackupPushButton->setStyle(m_lightPushButtonStyle);
+        ui->addBackupPushButton->setStyle(m_lightPushButtonStyle);
+        ui->deleteBackupPushButton->setStyle(m_lightPushButtonStyle);
+    }
+    else{
+        ui->actionDark->setChecked(true);
+        ui->actionLight->setChecked(false);
+        this->setStyleSheet(QssInstaller::installFromFile(":/stylesheet/btmainwindow_dark.css"));
+        IconInstaller::installPushButtonIcon(ui->startBackupPushButton, ":/pic/start.png");
+        IconInstaller::installPushButtonIcon(ui->saveBackupPushButton, ":/pic/save.png");
+        IconInstaller::installPushButtonIcon(ui->addBackupPushButton, ":/pic/add.png");
+        IconInstaller::installPushButtonIcon(ui->deleteBackupPushButton, ":/pic/delete.png");
+        ui->startBackupPushButton->setStyle(m_darkPushbuttonStyle);
+        ui->saveBackupPushButton->setStyle(m_darkPushbuttonStyle);
+        ui->addBackupPushButton->setStyle(m_darkPushbuttonStyle);
+        ui->deleteBackupPushButton->setStyle(m_darkPushbuttonStyle);
     }
 }
 

@@ -1,5 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>stylesheet/btaddbackupconfigdialog.css</file>
+        <file>stylesheet/btmainwindow_dark.css</file>
+        <file>stylesheet/btmainwindow_light.css</file>
     </qresource>
 </RCC>
