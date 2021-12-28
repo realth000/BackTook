@@ -125,11 +125,6 @@ void BTMainWindow::initWindow()
 
 void BTMainWindow::initBackupTable()
 {
-    const int backupConfigCount = m_backupConfigs->length();
-    if(backupConfigCount <= 0){
-        return;
-    }
-
     ui->backupTable->clearContents();
     ui->backupTable->setRowCount(0);
     ui->backupTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
