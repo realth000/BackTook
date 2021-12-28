@@ -53,8 +53,10 @@ void BTBackupProgressDialog::backupFinished()
 
 void BTBackupProgressDialog::initUI()
 {
-    this->setFixedWidth(900);
-    this->setMinimumHeight(600);
+    setFixedWidth(900);
+    setMinimumHeight(600);
+    setWindowFlags(windowFlags() & static_cast<Qt::WindowType>(~Qt::WindowContextHelpButtonHint));
+    setWindowTitle("备份");
     ui->logTextEdit->setReadOnly(true);
 
     // TODO: Pause and continue backup

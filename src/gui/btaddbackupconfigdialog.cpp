@@ -28,7 +28,9 @@ BTAddBackupConfigDialog::~BTAddBackupConfigDialog()
 
 void BTAddBackupConfigDialog::initUI()
 {
-    this->setMinimumSize(500, 250);
+    setMinimumSize(500, 200);
+    setWindowFlags(windowFlags() & static_cast<Qt::WindowType>(~Qt::WindowContextHelpButtonHint));
+    setWindowTitle("添加");
     ui->srcPathLineEdit->setReadOnly(true);
     ui->dstPathLineEdit->setReadOnly(true);
     ui->hintLabel->setVisible(false);
