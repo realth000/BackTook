@@ -269,6 +269,10 @@ void BTMainWindow::loadConfig()
 
 void BTMainWindow::startBackupProgress()
 {
+    if(m_bakChBCheckedCount <= 0){
+        return;
+    }
+
     bool backupCanceled = false;
     int pos = 0;
     QString srcPath;
