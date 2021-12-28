@@ -15,14 +15,20 @@
  *  along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "gui/btmainwindow.h"
-#include <QApplication>
+#include "qssinstaller.h"
 
-int main(int argc, char *argv[])
+QssInstaller::QssInstaller()
 {
-    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-    QApplication a(argc, argv);
-    BTMainWindow w;
-    w.show();
-    return a.exec();
+
+}
+
+QString QssInstaller::installFromFile(QString qssFilePath)
+{
+    QFile qss(qssFilePath);
+    qss.open(QIODevice::ReadOnly);
+    QTextStream qssStream;
+    qssStream.setDevice(&qss);
+    QString qssString = qss.readAll();
+    qss.close();
+    return qssString;
 }

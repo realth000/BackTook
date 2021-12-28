@@ -1,0 +1,32 @@
+﻿QWidget{
+    font-size: 13px;
+}
+
+QDialog#BTBackupProgressDialog{
+    background-color: #333333;
+}
+
+QLabel{
+    color: #f0ffff;
+}
+
+QProgressBar{
+    color: #f0ffff;
+    background: transparent;
+    border: 1px solid #f0ffff;
+    border-radius: 1px;
+    text-align: center;
+}
+
+QProgressBar::chunk{
+    background-color: #254158;
+    border-radius: 1px;
+
+}
+
+
+QTextEdit{
+    color: #f0ffff;
+    background-color: transparent;
+    selection-background-color: #254158;
+}

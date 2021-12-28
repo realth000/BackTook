@@ -15,14 +15,17 @@
  *  along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "gui/btmainwindow.h"
-#include <QApplication>
+#ifndef ICONINSTALLER_H
+#define ICONINSTALLER_H
 
-int main(int argc, char *argv[])
+#include <QString>
+#include <QPushButton>
+
+class IconInstaller
 {
-    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-    QApplication a(argc, argv);
-    BTMainWindow w;
-    w.show();
-    return a.exec();
-}
+public:
+    explicit IconInstaller();
+    static void installPushButtonIcon(QPushButton *pushButton, QString iconPath);
+};
+
+#endif // QSSINSTALLER_H

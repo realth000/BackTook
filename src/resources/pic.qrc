@@ -1,0 +1,18 @@
+<RCC>
+    <qresource prefix="/">
+        <file>pic/delete.png</file>
+        <file>pic/delete2.png</file>
+        <file>pic/start.png</file>
+        <file>pic/add.png</file>
+        <file>pic/add2.png</file>
+        <file>pic/start2.png</file>
+        <file>pic/save.png</file>
+        <file>pic/save2.png</file>
+        <file>pic/cancel.png</file>
+        <file>pic/cancel2.png</file>
+        <file>pic/yes.png</file>
+        <file>pic/yes2.png</file>
+        <file>pic/openfolder.png</file>
+        <file>pic/openfolder2.png</file>
+    </qresource>
+</RCC>

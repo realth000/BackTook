@@ -18,8 +18,25 @@
 #include "copyhelper.h"
 #include <QtCore/QFileInfo>
 
+// test
+#include <QThread>
+#include <QDebug>
+
+CopyHelper::CopyHelper(QObject *parent)
+    : QObject(parent),
+      m_stopCopy(false)
+{
+
+}
+
 bool CopyHelper::copyFile(const QString &srcFilePath, const QString &dstFilePath, const CopyMode &copyMode)
 {
+#if 0
+    QThread::sleep(1);
+#endif
+    if(m_stopCopy){
+        return true;
+    }
     bool ret = false;
     if(!QFile::exists(srcFilePath)){
         criticalLogger(QStringLiteral("source file not exists"), srcFilePath);
@@ -32,7 +49,10 @@ bool CopyHelper::copyFile(const QString &srcFilePath, const QString &dstFilePath
         }
     }
     ret = QFile::copy(srcFilePath, dstFilePath);
-    if(!ret){
+    if(ret){
+        emit fileCopied(srcFilePath, true);
+    }
+    else{
         criticalLogger(QStringLiteral("failed during copy"), srcFilePath);
     }
     return ret;
@@ -40,6 +60,9 @@ bool CopyHelper::copyFile(const QString &srcFilePath, const QString &dstFilePath
 
 void CopyHelper::copyDirectory(const QString &srcDirPath, const QString &dstDirPath, const CopyMode &copyMode)
 {
+    if(m_stopCopy){
+        return;
+    }
     QDir sourceDir(srcDirPath);
     if(!sourceDir.exists()){
         criticalLogger(QStringLiteral("source directory not exists"), srcDirPath);
@@ -72,7 +95,40 @@ void CopyHelper::copyDirectory(const QString &srcDirPath, const QString &dstDirP
     }
 }
 
+void CopyHelper::checkDirectoryInfo(const QString &directoryPath, qint64 &fileCount, qint64 &totalSize)
+{
+    if(directoryPath.isEmpty()){
+        qCritical("CheckDirctoryInfo: empty directory path.");
+        return;
+    }
+    fileCount = 0;
+    totalSize = 0;
+    QDirIterator it(directoryPath, QDir::Files | QDir::Dirs | QDir::Hidden, QDirIterator::Subdirectories);
+    while(it.hasNext()){
+        totalSize += it.fileInfo().size();
+        if(it.fileInfo().isFile()){
+            fileCount++;
+        }
+        it.next();
+    }
+    totalSize += it.fileInfo().size();
+    if(it.fileInfo().isFile()){
+        fileCount++;
+    }
+}
+
+void CopyHelper::stopCopy()
+{
+    m_stopCopy = true;
+}
+
 void CopyHelper::criticalLogger(const QString &logBody, const QString &filePath)
 {
     qCritical("Copy failed, %s: %s", qUtf8Printable(logBody), qUtf8Printable(filePath));
+    emit fileCopied(filePath, false, logBody);
+}
+
+void CopyHelper::setCopyMode(const CopyMode &copyMode)
+{
+    m_copyMode = copyMode;
 }

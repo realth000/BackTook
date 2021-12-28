@@ -1,0 +1,58 @@
+﻿QWidget{
+    font-size: 13px;
+}
+
+QMainWindow#BTMainWindow{
+    background-color: #ffffff;
+}
+
+QStatusBar{
+    background-color: transparent;
+}
+
+QTableWidget#backupTable{
+    background-color: transparent;
+    outline: none;
+}
+
+QTableWidget::item:!selected{
+    color: #333333;
+}
+
+QTableWidget::item:selected{
+    color: #f0ffff;
+    background: #336666;
+}
+
+QHeaderView{
+    color: #f0ffff;
+    background-color: #f0f0f0;
+}
+
+QHeaderView::section:horizontal{
+    color: #333333;
+    background-color: transparent;
+    border-top: none;
+    border-left: none;
+    border-right: 1px solid #515151;
+    border-bottom: 1px solid #515151;
+}
+
+QHeaderView::section:last{
+    border-right: none;
+}
+
+QMenuBar{
+    background-color: transparent;
+}
+
+QMenuBar::item:selected{
+    background-color: #336666;
+}
+
+QMenu{
+    background: #ffffff;
+    border: 1px solid #336666;
+    padding: 2px 4px 4px 2px;
+    selection-background-color: #336666;
+}

@@ -13,6 +13,5 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-target_sources(BackTook PRIVATE copyhelper.h copyhelper.cpp)
-target_sources(BackTook PRIVATE qssinstaller.h qssinstaller.cpp)
-target_sources(BackTook PRIVATE iconinstaller.h iconinstaller.cpp)
+target_sources(BackTook PRIVATE stylesheet.qrc)
+target_sources(BackTook PRIVATE pic.qrc)

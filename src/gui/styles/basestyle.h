@@ -15,32 +15,34 @@
  *  along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef BACKUPPROGRESSWORKER_H
-#define BACKUPPROGRESSWORKER_H
+#ifndef BASESTYLES_H
+#define BASESTYLES_H
 
-#include <QtCore/QFileInfo>
-#include <QtCore/QObject>
-#include "utils/copyhelper.h"
+#include <QtWidgets/QProxyStyle>
+#include <QtWidgets/QStyleOptionButton>
 
-class BackupProgressWorker : public QObject
+class PushButtonStyle : public QProxyStyle
 {
-    Q_OBJECT
-
 public:
-    BackupProgressWorker(const QString &srcPath, const QString &dstPath, const CopyMode &copyMode);
+    PushButtonStyle();
+    virtual void drawControl(ControlElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget = nullptr) const override;
 
-signals:
-    void backupFinished();
-    void fileBakcup(QString filePath, bool copyResult, QString errorMessage);
-
-public slots:
-    void startBackup();
-    void terminateBackup();
-
-private:
-    QFileInfo m_srcFileInfo;
-    QFileInfo m_dstFileInfo;
-    CopyHelper m_copyHelper;
+protected:
+    QColor normalColor;
+    QColor hoverColor;
+    QColor pressedColor;
+    QColor disabledColor;
+    QColor normalBorderColor;
+    QColor hoverBorderColor;
+    QColor pressedBorderColor;
+    QColor disabledBorderColor;
+    QColor textColor;
+    int borderWidth;
+    int iconOffset;
+    int iconWidth;
+    int iconHeight;
+    int testOffset;
 };
 
-#endif // BACKUPPROGRESSWORKER_H
+
+#endif // BASESTYLES_H

@@ -15,14 +15,25 @@
  *  along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "gui/btmainwindow.h"
-#include <QApplication>
+#include "iconinstaller.h"
+#include <QPixmap>
+#include <QIcon>
 
-int main(int argc, char *argv[])
+IconInstaller::IconInstaller()
 {
-    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-    QApplication a(argc, argv);
-    BTMainWindow w;
-    w.show();
-    return a.exec();
+
+}
+
+void IconInstaller::installPushButtonIcon(QPushButton *pushButton, QString iconPath)
+{
+    if(pushButton == nullptr || iconPath.isEmpty()){
+        return;
+    }
+    QIcon icon;
+    const QPixmap pixmap = QPixmap(iconPath);
+    if(pixmap.isNull()){
+        return;
+    }
+    icon.addPixmap(pixmap, QIcon::Normal, QIcon::Off);
+    pushButton->setIcon(icon);
 }

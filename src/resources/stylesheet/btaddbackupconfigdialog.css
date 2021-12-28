@@ -1,0 +1,7 @@
+﻿QWidget{
+    font-size: 13px;
+}
+
+QLabel#hintLabel{
+    color: rgb(255,0,0);
+}

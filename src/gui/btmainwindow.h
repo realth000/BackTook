@@ -18,11 +18,14 @@
 #ifndef BTMAINWINDOW_H
 #define BTMAINWINDOW_H
 
+#include <QtCore/QDirIterator>
 #include <QtWidgets/QCheckBox>
 #include <QtWidgets/QMainWindow>
 
 #include "core/btmaincontroller.h"
 #include "defines.h"
+#include "gui/styles/darkstyle.h"
+#include "gui/styles/lightstyle.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class BTMainWindow; }
@@ -36,6 +39,13 @@ public:
     BTMainWindow(QWidget *parent = nullptr);
     ~BTMainWindow();
 
+signals:
+    void sendBackupProgressHint(QString hint);
+    void sendBackupProgressFileCount(qint64 fileCount);
+
+public slots:
+    void addBackupConfig(const QString &name, const QString &srcPath, const QString &dstPath);
+
 private:
     Ui::BTMainWindow *ui;
     BTMainController *m_controller;
@@ -44,17 +54,31 @@ private:
     QWidget* getCheckBox();
     QVector<QCheckBox *> *m_backupChBVector;  // Store QCheckBox in TableWidget
     int m_bakChBCheckedCount;
+    QString m_backupConfigSavePath;
+    bool m_useLightStyle;
+    DarkPushButtonStyle *m_darkPushbuttonStyle;
+    LightPushButtonStyle *m_lightPushButtonStyle;
 
+    void saveConfig();
     void loadConfig();
+    void loadBackupConfig();
     void initConnection();
     void initUI();
     void initWindow();
     void initBackupTable();
     void loadBackupConfigToTable();
+    void loadStyles();
+    void addBackupConfigToDatas(const QString &name, const QString &srcPath, const QString &dstPath);
+    void addBackupConfigToTable(const QString &name, const QString &srcPath, const QString &dstPath, const QString &lastBackupTime = "");
+    void deleteBackupConfig(const int &pos);
+    void updateBackupTime(const int &configIndex);
 
 private slots:
     void startBackupProgress();
     void updateBackupConfigChecks(const int &state);
+    void saveBackupConfig();
+    void addConfig();
+    void deleteConfig();
 
 };
 #endif // BTMAINWINDOW_H
