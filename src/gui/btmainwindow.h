@@ -59,8 +59,9 @@ private:
     DarkPushButtonStyle *m_darkPushbuttonStyle;
     LightPushButtonStyle *m_lightPushButtonStyle;
 
-
+    void saveConfig();
     void loadConfig();
+    void loadBackupConfig();
     void initConnection();
     void initUI();
     void initWindow();
@@ -75,7 +76,7 @@ private:
 private slots:
     void startBackupProgress();
     void updateBackupConfigChecks(const int &state);
-    void saveConfig();
+    void saveBackupConfig();
     void addConfig();
     void deleteConfig();
 

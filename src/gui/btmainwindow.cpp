@@ -19,6 +19,7 @@
 #include "./ui_btmainwindow.h"
 
 #include <QtCore/QDebug>
+#include <QtCore/QSettings>
 #include <QtCore/QThread>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QVBoxLayout>
@@ -35,6 +36,9 @@
 
 #define BACKUP_TABLE_ROW_HEIGHT 35
 
+#define CONFIG_FILE_NAME "config.ini"
+#define CONFIG_COLORSTYLE_PATH "/Appearance/ColorStyle"
+
 BTMainWindow::BTMainWindow(QWidget *parent)
     : QMainWindow(parent),
       ui(new Ui::BTMainWindow),
@@ -49,6 +53,7 @@ BTMainWindow::BTMainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     loadConfig();
+    loadBackupConfig();
     initConnection();
     initUI();
 }
@@ -102,7 +107,7 @@ void BTMainWindow::updateBackupTime(const int &configIndex)
     (*m_backupConfigs)[configIndex].lastBackupTime = backupTime;
 }
 
-void BTMainWindow::loadConfig()
+void BTMainWindow::loadBackupConfig()
 {
     // test
 #if 0
@@ -117,14 +122,13 @@ void BTMainWindow::loadConfig()
     JsonParser::saveBackupConfigJsonToFile(m_backupConfigSavePath, outVector);
 #endif
     JsonParser::loadBackupConfigJsonFromFile(m_backupConfigSavePath, m_backupConfigs);
-    qDebug() << "load result:" << JsonParser::backupConfigToString(*m_backupConfigs);
 }
 
 void BTMainWindow::initConnection()
 {
     // startBackupPushButton
     connect(ui->startBackupPushButton, &QPushButton::clicked, this, &BTMainWindow::startBackupProgress);
-    connect(ui->saveBackupPushButton, &QPushButton::clicked, this, &BTMainWindow::saveConfig);
+    connect(ui->saveBackupPushButton, &QPushButton::clicked, this, &BTMainWindow::saveBackupConfig);
     connect(ui->addBackupPushButton, &QPushButton::clicked, this, &BTMainWindow::addConfig);
     connect(ui->deleteBackupPushButton, &QPushButton::clicked, this, &BTMainWindow::deleteConfig);
 
@@ -217,6 +221,7 @@ void BTMainWindow::loadStyles()
         ui->addBackupPushButton->setStyle(m_darkPushbuttonStyle);
         ui->deleteBackupPushButton->setStyle(m_darkPushbuttonStyle);
     }
+    saveConfig();
 }
 
 void BTMainWindow::addBackupConfigToDatas(const QString &name, const QString &srcPath, const QString &dstPath)
@@ -246,6 +251,20 @@ QWidget* BTMainWindow::getCheckBox()
     hBox->addLayout(vBox);
     hBox->addStretch(1);
     return retWidget;
+}
+
+void BTMainWindow::saveConfig()
+{
+    QSettings *config = new QSettings(QApplication::applicationDirPath() + NATIVE_SEPARATOR + CONFIG_FILE_NAME);
+    config->setValue(CONFIG_COLORSTYLE_PATH, m_useLightStyle);
+    delete config;
+}
+
+void BTMainWindow::loadConfig()
+{
+    QSettings *config = new QSettings(QApplication::applicationDirPath() + NATIVE_SEPARATOR + CONFIG_FILE_NAME);
+    m_useLightStyle = config->value(CONFIG_COLORSTYLE_PATH).toBool();
+    delete config;
 }
 
 void BTMainWindow::startBackupProgress()
@@ -326,7 +345,7 @@ void BTMainWindow::updateBackupConfigChecks(const int &state)
     state == 0 ? m_bakChBCheckedCount-- : m_bakChBCheckedCount++;
 }
 
-void BTMainWindow::saveConfig()
+void BTMainWindow::saveBackupConfig()
 {
     JsonParser::saveBackupConfigJsonToFile(m_backupConfigSavePath, *m_backupConfigs) ? qInfo("Save config success") : qInfo("Save config failed");
 }
