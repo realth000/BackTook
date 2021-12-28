@@ -61,8 +61,9 @@ private:
     void initBackupTable();
     void loadBackupConfigToTable();
     void addBackupConfigToDatas(const QString &name, const QString &srcPath, const QString &dstPath);
-    void addBackupConfigToTable(const QString &name, const QString &srcPath, const QString &dstPath);
+    void addBackupConfigToTable(const QString &name, const QString &srcPath, const QString &dstPath, const QString &lastBackupTime = "");
     void deleteBackupConfig(const int &pos);
+    void updateBackupTime(const int &configIndex);
 
 private slots:
     void startBackupProgress();

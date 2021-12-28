@@ -62,7 +62,7 @@ void BTMainWindow::addBackupConfig(const QString &name, const QString &srcPath, 
     addBackupConfigToTable(name ,srcPath, dstPath);
 }
 
-void BTMainWindow::addBackupConfigToTable(const QString &name, const QString &srcPath, const QString &dstPath)
+void BTMainWindow::addBackupConfigToTable(const QString &name, const QString &srcPath, const QString &dstPath, const QString &lastBackupTime)
 {
     const int pos = ui->backupTable->rowCount();
     ui->backupTable->insertRow(pos);
@@ -71,7 +71,7 @@ void BTMainWindow::addBackupConfigToTable(const QString &name, const QString &sr
     ui->backupTable->setItem(pos, 1, new QTableWidgetItem(name));
     ui->backupTable->setItem(pos, 2, new QTableWidgetItem(srcPath));
     ui->backupTable->setItem(pos, 3, new QTableWidgetItem(dstPath));
-
+    ui->backupTable->setItem(pos, 4, new QTableWidgetItem(lastBackupTime));
 }
 
 void BTMainWindow::deleteBackupConfig(const int &pos)
@@ -79,8 +79,20 @@ void BTMainWindow::deleteBackupConfig(const int &pos)
     delete (*m_backupChBVector)[pos];
     m_backupChBVector->removeAt(pos);
     ui->backupTable->removeRow(pos);
-
     m_backupConfigs->removeAt(pos);
+}
+
+void BTMainWindow::updateBackupTime(const int &configIndex)
+{
+    const QString backupTime = QDateTime::currentDateTime().toString("yyyy.MM.dd-HH:mm:ss");
+    QTableWidgetItem *item = ui->backupTable->item(configIndex, 4);
+    if(item == nullptr){
+        item = new QTableWidgetItem(backupTime);
+        ui->backupTable->setItem(configIndex, 4, item);
+
+    }
+    item->setText(backupTime);
+    (*m_backupConfigs)[configIndex].lastBackupTime = backupTime;
 }
 
 void BTMainWindow::loadConfig()
@@ -147,7 +159,7 @@ void BTMainWindow::initBackupTable()
 void BTMainWindow::loadBackupConfigToTable()
 {
     for(const BackupConfigObject &configObj : *m_backupConfigs){
-        addBackupConfigToTable(configObj.name, configObj.srcPath, configObj.dstPath);
+        addBackupConfigToTable(configObj.name, configObj.srcPath, configObj.dstPath, configObj.lastBackupTime);
     }
 }
 
@@ -237,8 +249,9 @@ void BTMainWindow::startBackupProgress()
 
             connect(backupWorker, &BackupProgressWorker::fileBakcup, progressDialog, &BTBackupProgressDialog::updateBackupProgress, Qt::BlockingQueuedConnection);
             connect(backupWorker, &BackupProgressWorker::backupFinished, this,
-                    [&taskCount, progressDialog]()
+                    [&taskCount, progressDialog, pos, this]()
                     {
+                        updateBackupTime(pos);
                         taskCount--;
                         if(taskCount == 0){
                             progressDialog->backupFinished();
