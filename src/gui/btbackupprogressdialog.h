@@ -2,6 +2,8 @@
 #define BTBACKUPPROGRESSDIALOG_H
 
 #include <QtWidgets/QDialog>
+#include "gui/styles/darkstyle.h"
+#include "gui/styles/lightstyle.h"
 
 namespace Ui {
 class BTBackupProgressDialog;
@@ -12,7 +14,7 @@ class BTBackupProgressDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit BTBackupProgressDialog(QWidget *parent = nullptr);
+    explicit BTBackupProgressDialog(QWidget *parent = nullptr, const bool &useLightStyle = true);
     ~BTBackupProgressDialog();
 
 signals:
@@ -29,6 +31,9 @@ private:
     bool m_state;
     qint64 m_curremtFileCount;
     qint64 m_fileCount;
+    bool m_useLightStyle;
+    DarkPushButtonStyle *m_darkPushButtonStyle;
+    LightPushButtonStyle *m_lightPushButtonStyle;
 
     void initUI();
     void initConnection();

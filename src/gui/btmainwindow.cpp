@@ -275,7 +275,7 @@ void BTMainWindow::startBackupProgress()
     QString dstPath;
     qint64 fileCount = 0;
     qint64 totalSize = 0;
-    BTBackupProgressDialog *progressDialog = new BTBackupProgressDialog(this);
+    BTBackupProgressDialog *progressDialog = new BTBackupProgressDialog(this, m_useLightStyle);
     connect(this, &BTMainWindow::sendBackupProgressHint, progressDialog, &BTBackupProgressDialog::setHint);
     connect(this, &BTMainWindow::sendBackupProgressFileCount, progressDialog, &BTBackupProgressDialog::setFileCount);
     connect(progressDialog, &BTBackupProgressDialog::terminateBackup, this, [&backupCanceled](){backupCanceled = true;});

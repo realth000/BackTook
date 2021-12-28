@@ -1,13 +1,19 @@
 ﻿#include "btbackupprogressdialog.h"
 #include "ui_btbackupprogressdialog.h"
-#include <QtCore/QDebug>
 
-BTBackupProgressDialog::BTBackupProgressDialog(QWidget *parent) :
+#include <QtCore/QDebug>
+#include "utils/iconinstaller.h"
+#include "utils/qssinstaller.h"
+
+BTBackupProgressDialog::BTBackupProgressDialog(QWidget *parent, const bool &useLightStyle) :
       QDialog(parent),
       ui(new Ui::BTBackupProgressDialog),
       m_state(false),
       m_curremtFileCount(0),
-      m_fileCount(0)
+      m_fileCount(0),
+      m_useLightStyle(useLightStyle),
+      m_darkPushButtonStyle(new DarkPushButtonStyle),
+      m_lightPushButtonStyle(new LightPushButtonStyle)
 {
     ui->setupUi(this);
     initUI();
@@ -17,6 +23,8 @@ BTBackupProgressDialog::BTBackupProgressDialog(QWidget *parent) :
 BTBackupProgressDialog::~BTBackupProgressDialog()
 {
     delete ui;
+    delete m_darkPushButtonStyle;
+    delete m_lightPushButtonStyle;
 }
 
 void BTBackupProgressDialog::setHint(const QString &hint)
@@ -48,6 +56,19 @@ void BTBackupProgressDialog::initUI()
     this->setFixedWidth(900);
     this->setMinimumHeight(600);
     ui->logTextEdit->setReadOnly(true);
+
+    // TODO: Pause and continue backup
+    ui->swithStatePushButton->setVisible(false);
+    if(m_useLightStyle){
+        this->setStyleSheet(QssInstaller::installFromFile(":/stylesheet/btbackupprogressdialog_light.css"));
+        IconInstaller::installPushButtonIcon(ui->terminatePushButton, ":/pic/cancel2.png");
+        ui->terminatePushButton->setStyle(m_lightPushButtonStyle);
+    }
+    else{
+        this->setStyleSheet(QssInstaller::installFromFile(":/stylesheet/btbackupprogressdialog_dark.css"));
+        IconInstaller::installPushButtonIcon(ui->terminatePushButton, ":/pic/cancel.png");
+        ui->terminatePushButton->setStyle(m_darkPushButtonStyle);
+    }
 }
 
 void BTBackupProgressDialog::initConnection()

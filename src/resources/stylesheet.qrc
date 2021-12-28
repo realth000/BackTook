@@ -3,5 +3,7 @@
         <file>stylesheet/btaddbackupconfigdialog.css</file>
         <file>stylesheet/btmainwindow_dark.css</file>
         <file>stylesheet/btmainwindow_light.css</file>
+        <file>stylesheet/btbackupprogressdialog_dark.css</file>
+        <file>stylesheet/btbackupprogressdialog_light.css</file>
     </qresource>
 </RCC>

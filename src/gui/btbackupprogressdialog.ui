@@ -62,8 +62,8 @@
       <widget class="QPushButton" name="terminatePushButton">
        <property name="minimumSize">
         <size>
-         <width>30</width>
-         <height>30</height>
+         <width>40</width>
+         <height>40</height>
         </size>
        </property>
        <property name="text">

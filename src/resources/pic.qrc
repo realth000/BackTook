@@ -8,5 +8,7 @@
         <file>pic/start2.png</file>
         <file>pic/save.png</file>
         <file>pic/save2.png</file>
+        <file>pic/cancel.png</file>
+        <file>pic/cancel2.png</file>
     </qresource>
 </RCC>
