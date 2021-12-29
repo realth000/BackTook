@@ -328,7 +328,7 @@ void BTMainWindow::startBackupProgress()
             connect(backupThread, &QThread::finished, backupThread, &QThread::deleteLater);
             connect(backupThread, &QThread::finished, backupWorker, &BackupProgressWorker::deleteLater);
 
-            connect(backupWorker, &BackupProgressWorker::fileBakcup, progressDialog, &BTBackupProgressDialog::updateBackupProgress, Qt::BlockingQueuedConnection);
+            connect(backupWorker, &BackupProgressWorker::fileBakcup, progressDialog, &BTBackupProgressDialog::updateBackupProgress);
             connect(backupWorker, &BackupProgressWorker::backupFinished, this,
                     [progressDialog, pos, this]()
                     {
