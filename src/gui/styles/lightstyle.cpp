@@ -22,7 +22,7 @@ LightPushButtonStyle::LightPushButtonStyle()
       normalColor("transparent"),
       hoverColor(235,235,235),
       pressedColor(210, 210, 210),
-      disabledColor(40, 40, 40),
+      disabledColor("transparent"),
       normalBorderColor("transparent"),
       hoverBorderColor(51, 85, 100),
       pressedBorderColor(51, 85, 100),

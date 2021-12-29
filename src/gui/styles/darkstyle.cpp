@@ -22,7 +22,7 @@ DarkPushButtonStyle::DarkPushButtonStyle()
       normalColor("transparent"),
       hoverColor(71, 71, 71),
       pressedColor(61, 61, 61),
-      disabledColor(40, 40, 40),
+      disabledColor("transparent"),
       normalBorderColor("transparent"),
       hoverBorderColor(51, 85, 100),
       pressedBorderColor(51, 85, 100),

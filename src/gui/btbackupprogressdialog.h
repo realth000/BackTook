@@ -33,6 +33,7 @@ class BTBackupProgressDialog : public QDialog
 public:
     explicit BTBackupProgressDialog(QWidget *parent = nullptr, const bool &useLightStyle = true);
     ~BTBackupProgressDialog();
+    void setTaskCount(const int &taskCount);
 
 signals:
     void terminateBackup();
@@ -51,6 +52,7 @@ private:
     bool m_useLightStyle;
     DarkPushButtonStyle *m_darkPushButtonStyle;
     LightPushButtonStyle *m_lightPushButtonStyle;
+    int m_taskCount;
 
     void initUI();
     void initConnection();

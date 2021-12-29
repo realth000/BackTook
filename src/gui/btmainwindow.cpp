@@ -176,10 +176,10 @@ void BTMainWindow::initBackupTable()
     ui->backupTable->setColumnCount(headerLabels.length());
     ui->backupTable->setHorizontalHeaderLabels(headerLabels);
     ui->backupTable->setColumnWidth(0, 40);
-    ui->backupTable->setColumnWidth(1, 200);
-    ui->backupTable->setColumnWidth(2, 200);
-    ui->backupTable->setColumnWidth(3, 200);
-    ui->backupTable->setColumnWidth(4, 200);
+    ui->backupTable->setColumnWidth(1, 150);
+    ui->backupTable->setColumnWidth(2, 250);
+    ui->backupTable->setColumnWidth(3, 250);
+    ui->backupTable->setColumnWidth(4, 100);
     ui->backupTable->horizontalHeader()->setStretchLastSection(true);
     ui->backupTable->horizontalHeader()->setHighlightSections(false);
     ui->backupTable->verticalHeader()->setVisible(false);
@@ -286,6 +286,7 @@ void BTMainWindow::startBackupProgress()
     progressDialog->show();
 
     emit sendBackupProgressHint("计算文件中");
+    // NOTE: Lifetime meets terminate and finished situation.
     int taskCount = 0;
     for(const QCheckBox *checkBox : *m_backupChBVector){
         if(checkBox->isChecked()){
@@ -294,6 +295,7 @@ void BTMainWindow::startBackupProgress()
          }
         pos++;
     }
+    progressDialog->setTaskCount(taskCount);
     emit sendBackupProgressFileCount(fileCount);
 
     emit sendBackupProgressHint("备份中");
@@ -328,13 +330,10 @@ void BTMainWindow::startBackupProgress()
 
             connect(backupWorker, &BackupProgressWorker::fileBakcup, progressDialog, &BTBackupProgressDialog::updateBackupProgress, Qt::BlockingQueuedConnection);
             connect(backupWorker, &BackupProgressWorker::backupFinished, this,
-                    [&taskCount, progressDialog, pos, this]()
+                    [progressDialog, pos, this]()
                     {
                         updateBackupTime(pos);
-                        taskCount--;
-                        if(taskCount == 0){
-                            progressDialog->backupFinished();
-                        }
+                        progressDialog->backupFinished();
                     });
 
             backupWorker->moveToThread(backupThread);

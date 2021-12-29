@@ -30,7 +30,8 @@ BTBackupProgressDialog::BTBackupProgressDialog(QWidget *parent, const bool &useL
       m_fileCount(0),
       m_useLightStyle(useLightStyle),
       m_darkPushButtonStyle(new DarkPushButtonStyle),
-      m_lightPushButtonStyle(new LightPushButtonStyle)
+      m_lightPushButtonStyle(new LightPushButtonStyle),
+      m_taskCount(0)
 {
     ui->setupUi(this);
     initUI();
@@ -42,6 +43,11 @@ BTBackupProgressDialog::~BTBackupProgressDialog()
     delete ui;
     delete m_darkPushButtonStyle;
     delete m_lightPushButtonStyle;
+}
+
+void BTBackupProgressDialog::setTaskCount(const int &taskCount)
+{
+    m_taskCount = taskCount;
 }
 
 void BTBackupProgressDialog::setHint(const QString &hint)
@@ -64,8 +70,13 @@ void BTBackupProgressDialog::updateBackupProgress(const QString &filePath, const
 
 void BTBackupProgressDialog::backupFinished()
 {
+    m_taskCount--;
+    if(m_taskCount > 0 ){
+        return;
+    }
     ui->hintLabel->setText("备份完成");
     ui->logTextEdit->append("备份完成");
+    ui->terminatePushButton->setEnabled(false);
 }
 
 void BTBackupProgressDialog::initUI()
@@ -123,6 +134,8 @@ void BTBackupProgressDialog::swithState()
 void BTBackupProgressDialog::terminate()
 {
     emit terminateBackup();
+    m_taskCount = 0;
+    backupFinished();
     ui->hintLabel->setText("已停止");
     ui->logTextEdit->append("已停止");
 }
