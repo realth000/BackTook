@@ -14,5 +14,6 @@
         <file>pic/yes2.png</file>
         <file>pic/openfolder.png</file>
         <file>pic/openfolder2.png</file>
+        <file>pic/DejaVuSansMono-1.ttf</file>
     </qresource>
 </RCC>
