@@ -124,6 +124,14 @@ void BTBackupProgressDialog::updateFinishedFileCount(const int &fileCount)
     ui->backupProgressBar->setValue(100*m_curremtFileCount/m_fileCount);
 }
 
+void BTBackupProgressDialog::closeEvent(QCloseEvent *e)
+{
+    Q_UNUSED(e)
+    if(m_taskCount > 0){
+        emit terminateBackup();
+    }
+}
+
 // TODO: Pause and continue.
 void BTBackupProgressDialog::swithState()
 {

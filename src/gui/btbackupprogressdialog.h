@@ -19,6 +19,7 @@
 #define BTBACKUPPROGRESSDIALOG_H
 
 #include <QtWidgets/QDialog>
+#include <QtGui/QCloseEvent>
 #include "gui/styles/darkstyle.h"
 #include "gui/styles/lightstyle.h"
 
@@ -59,6 +60,7 @@ private:
     void updateSuccessLog(const QString &filePath);
     void updateFailedLog(const QString &filePath, const QString &errorMessage);
     void updateFinishedFileCount(const int &fileCount = 1);
+    void closeEvent(QCloseEvent *e) override;
 
 private slots:
     void swithState();
