@@ -61,19 +61,6 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="saveBackupPushButton">
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>40</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>保存</string>
-          </property>
-         </widget>
-        </item>
-        <item>
          <widget class="QPushButton" name="addBackupPushButton">
           <property name="minimumSize">
            <size>
