@@ -42,7 +42,11 @@ bool CopyHelper::copyFile(const QString &srcFilePath, const QString &dstFilePath
         criticalLogger(QStringLiteral("source file not exists"), srcFilePath);
         return false;
     }
-    if(copyMode == CopyMode::Force && QFile::exists(dstFilePath)){
+    if(QFile::exists(dstFilePath)){
+        if(copyMode != CopyMode::Force){
+            criticalLogger(QStringLiteral("skip exist file"), srcFilePath);
+            return false;
+        }
         if(!QFile::remove(dstFilePath)){
             criticalLogger(QStringLiteral("source file can not overwrite"), srcFilePath);
             return false;
@@ -95,15 +99,23 @@ void CopyHelper::copyDirectory(const QString &srcDirPath, const QString &dstDirP
     }
 }
 
-void CopyHelper::checkDirectoryInfo(const QString &directoryPath, qint64 &fileCount, qint64 &totalSize)
+bool CopyHelper::checkDirectoryInfo(const QString &srcPath, const QString &dstPath, qint64 &fileCount, qint64 &totalSize)
 {
-    if(directoryPath.isEmpty()){
+    if(srcPath.isEmpty()){
         qCritical("CheckDirctoryInfo: empty directory path.");
-        return;
+        return false;
+    }
+    if(!QFileInfo::exists(srcPath)){
+        qCritical("Source directory not exists.");
+        return false;
+    }
+    if(!QFileInfo::exists(dstPath)){
+        qCritical("Destination directory not exists.");
+        return false;
     }
     fileCount = 0;
     totalSize = 0;
-    QDirIterator it(directoryPath, QDir::Files | QDir::Dirs | QDir::Hidden, QDirIterator::Subdirectories);
+    QDirIterator it(srcPath, QDir::Files | QDir::Dirs | QDir::Hidden, QDirIterator::Subdirectories);
     while(it.hasNext()){
         totalSize += it.fileInfo().size();
         if(it.fileInfo().isFile()){
@@ -115,6 +127,7 @@ void CopyHelper::checkDirectoryInfo(const QString &directoryPath, qint64 &fileCo
     if(it.fileInfo().isFile()){
         fileCount++;
     }
+    return true;
 }
 
 void CopyHelper::stopCopy()

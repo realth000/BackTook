@@ -41,6 +41,7 @@ private:
     QFileInfo m_srcFileInfo;
     QFileInfo m_dstFileInfo;
     CopyHelper m_copyHelper;
+    CopyMode m_copyMode;
 };
 
 #endif // BACKUPPROGRESSWORKER_H

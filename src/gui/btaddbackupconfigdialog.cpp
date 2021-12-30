@@ -73,6 +73,11 @@ void BTAddBackupConfigDialog::initUI()
         ui->selectSrcPathPushButton->setStyle(m_darkPushButtonStyle);
         ui->selectDstPathPushButton->setStyle(m_darkPushButtonStyle);
     }
+
+    ui->selectSrcPathPushButton->setFocusPolicy(Qt::NoFocus);
+    ui->selectDstPathPushButton->setFocusPolicy(Qt::NoFocus);
+    ui->cancelPushButton->setFocusPolicy(Qt::NoFocus);
+    ui->okPushButton->setFocusPolicy(Qt::NoFocus);
 }
 
 void BTAddBackupConfigDialog::initConnection()

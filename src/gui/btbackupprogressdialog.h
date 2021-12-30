@@ -19,6 +19,7 @@
 #define BTBACKUPPROGRESSDIALOG_H
 
 #include <QtWidgets/QDialog>
+#include <QtGui/QCloseEvent>
 #include "gui/styles/darkstyle.h"
 #include "gui/styles/lightstyle.h"
 
@@ -33,6 +34,8 @@ class BTBackupProgressDialog : public QDialog
 public:
     explicit BTBackupProgressDialog(QWidget *parent = nullptr, const bool &useLightStyle = true);
     ~BTBackupProgressDialog();
+    void setTaskCount(const int &taskCount);
+    void appendLog(const QString &log);
 
 signals:
     void terminateBackup();
@@ -51,12 +54,14 @@ private:
     bool m_useLightStyle;
     DarkPushButtonStyle *m_darkPushButtonStyle;
     LightPushButtonStyle *m_lightPushButtonStyle;
+    int m_taskCount;
 
     void initUI();
     void initConnection();
     void updateSuccessLog(const QString &filePath);
     void updateFailedLog(const QString &filePath, const QString &errorMessage);
     void updateFinishedFileCount(const int &fileCount = 1);
+    void closeEvent(QCloseEvent *e) override;
 
 private slots:
     void swithState();

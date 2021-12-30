@@ -22,6 +22,7 @@
 #include <QtCore/QDir>
 #include <QtCore/QDirIterator>
 #include <QtCore/QFile>
+#include "defines.h"
 
 #ifndef NATIVE_SEPARATOR
 #ifdef Q_OS_WINDOWS
@@ -30,11 +31,6 @@
 #define NATIVE_SEPARATOR "/"
 #endif // #ifdef Q_OS_WINDOWS
 #endif // #ifndef NATIVE_SEPARATOR
-
-enum class CopyMode : int {
-    Normal = 0,
-    Force
-};
 
 class CopyHelper : public QObject
 {
@@ -45,7 +41,7 @@ public:
     void setCopyMode(const CopyMode &copyMode);
     bool copyFile(const QString &srcFilePath, const QString &dstFilePath, const CopyMode &copyMode);
     void copyDirectory(const QString &srcDirPath, const QString &dstDirPath, const CopyMode &copyMode);
-    static void checkDirectoryInfo(const QString &directoryPath, qint64 &fileCount, qint64 &totalSize);
+    static bool checkDirectoryInfo(const QString &srcPath, const QString &dstPath, qint64 &fileCount, qint64 &totalSize);
     void stopCopy();
 
 signals:

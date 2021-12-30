@@ -13,7 +13,7 @@ QLabel{
 QProgressBar{
     color: #f0ffff;
     background: transparent;
-    border: 1px solid #f0ffff;
+    border: 1px solid #515151;
     border-radius: 1px;
     text-align: center;
 }
@@ -28,5 +28,6 @@ QProgressBar::chunk{
 QTextEdit{
     color: #f0ffff;
     background-color: transparent;
+    border: 1px solid #515151;
     selection-background-color: #254158;
 }

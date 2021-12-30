@@ -16,7 +16,7 @@
 cmake_minimum_required(VERSION 3.13)
 
 project(BackTook
-    VERSION 0.1.0
+    VERSION 1.0.0
     LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -37,7 +37,7 @@ if(WIN32)
     add_definitions(-DBACKTOOK_VERSION_MAJOR=${CMAKE_PROJECT_VERSION_MAJOR})
     add_definitions(-DBACKTOOK_VERSION_MINOR=${CMAKE_PROJECT_VERSION_MINOR})
     add_definitions(-DBACKTOOK_VERSION_PATCH=${CMAKE_PROJECT_VERSION_PATCH})
-    add_definitions(-DBACKTOOK_VERSION_MAJOR=1)
+    add_definitions(-DBACKTOOK_VERSION_BUILD=1)
     add_definitions(-DBACKTOOK_VERSION_STRING="${PROJECT_VERSION}")
 endif()
 

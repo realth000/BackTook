@@ -16,12 +16,26 @@
  */
 
 #include "gui/btmainwindow.h"
-#include <QApplication>
+#include <QtWidgets/QApplication>
+#include <QtGui/QFontDatabase>
+
+#ifdef Q_OS_WINDOWS
+#include <QtGui/QFont>
+#endif
 
 int main(int argc, char *argv[])
 {
     QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QApplication a(argc, argv);
+    QFontDatabase appFontDatabase;
+    appFontDatabase.addApplicationFont(":/pic/DejaVuSansMono-1.ttf");
+    QFont appFont;
+#ifdef Q_OS_WINDOWS
+    appFont.setFamily("DejaVu Sans Mono,Microsoft Yahei");
+#elif defined(Q_OS_LINUX) && !defined(Q_OS_ANDROID)
+    appFont.setFamily("Dejavu Sans Mono");
+#endif
+    a.setFont(appFont);
     BTMainWindow w;
     w.show();
     return a.exec();

@@ -38,6 +38,7 @@
 
 #define CONFIG_FILE_NAME "config.ini"
 #define CONFIG_COLORSTYLE_PATH "/Appearance/ColorStyle"
+#define CONFIG_COPYMODE_PATH "/Backup/CopyMode"
 
 BTMainWindow::BTMainWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -49,7 +50,8 @@ BTMainWindow::BTMainWindow(QWidget *parent)
       m_backupConfigSavePath(QApplication::applicationDirPath() + NATIVE_SEPARATOR + "backupConfig.json"),
       m_useLightStyle(true),
       m_darkPushbuttonStyle(new DarkPushButtonStyle),
-      m_lightPushButtonStyle(new LightPushButtonStyle)
+      m_lightPushButtonStyle(new LightPushButtonStyle),
+      m_copyMode(CopyMode::Normal)
 {
     ui->setupUi(this);
     loadConfig();
@@ -72,6 +74,7 @@ void BTMainWindow::addBackupConfig(const QString &name, const QString &srcPath, 
 {
     addBackupConfigToDatas(name, srcPath, dstPath);
     addBackupConfigToTable(name ,srcPath, dstPath);
+    saveBackupConfig();
 }
 
 void BTMainWindow::addBackupConfigToTable(const QString &name, const QString &srcPath, const QString &dstPath, const QString &lastBackupTime)
@@ -128,7 +131,6 @@ void BTMainWindow::initConnection()
 {
     // startBackupPushButton
     connect(ui->startBackupPushButton, &QPushButton::clicked, this, &BTMainWindow::startBackupProgress);
-    connect(ui->saveBackupPushButton, &QPushButton::clicked, this, &BTMainWindow::saveBackupConfig);
     connect(ui->addBackupPushButton, &QPushButton::clicked, this, &BTMainWindow::addConfig);
     connect(ui->deleteBackupPushButton, &QPushButton::clicked, this, &BTMainWindow::deleteConfig);
 
@@ -145,6 +147,8 @@ void BTMainWindow::initConnection()
                 this->m_useLightStyle = true;
                 loadStyles();
             });
+
+    connect(ui->forceBackupCheckBox, &QCheckBox::stateChanged, this, &BTMainWindow::setCopyMode);
 }
 
 void BTMainWindow::initUI()
@@ -159,9 +163,16 @@ void BTMainWindow::initUI()
 void BTMainWindow::initWindow()
 {
     this->setMinimumSize(WINDOW_MIN_WIDTH, WINDOW_MIN_HEIGHT);
-
+    this->setWindowTitle("BackTook");
     ui->actionDark->setCheckable(true);
     ui->actionLight->setCheckable(true);
+
+    if(m_copyMode == CopyMode::Normal){
+        ui->forceBackupCheckBox->setChecked(false);
+    }
+    else{
+        ui->forceBackupCheckBox->setChecked(true);
+    }
 }
 
 void BTMainWindow::initBackupTable()
@@ -176,10 +187,10 @@ void BTMainWindow::initBackupTable()
     ui->backupTable->setColumnCount(headerLabels.length());
     ui->backupTable->setHorizontalHeaderLabels(headerLabels);
     ui->backupTable->setColumnWidth(0, 40);
-    ui->backupTable->setColumnWidth(1, 200);
-    ui->backupTable->setColumnWidth(2, 200);
-    ui->backupTable->setColumnWidth(3, 200);
-    ui->backupTable->setColumnWidth(4, 200);
+    ui->backupTable->setColumnWidth(1, 150);
+    ui->backupTable->setColumnWidth(2, 250);
+    ui->backupTable->setColumnWidth(3, 250);
+    ui->backupTable->setColumnWidth(4, 100);
     ui->backupTable->horizontalHeader()->setStretchLastSection(true);
     ui->backupTable->horizontalHeader()->setHighlightSections(false);
     ui->backupTable->verticalHeader()->setVisible(false);
@@ -200,11 +211,9 @@ void BTMainWindow::loadStyles()
         ui->actionLight->setChecked(true);
         this->setStyleSheet(QssInstaller::installFromFile(":/stylesheet/btmainwindow_light.css"));
         IconInstaller::installPushButtonIcon(ui->startBackupPushButton, ":/pic/start2.png");
-        IconInstaller::installPushButtonIcon(ui->saveBackupPushButton, ":/pic/save2.png");
         IconInstaller::installPushButtonIcon(ui->addBackupPushButton, ":/pic/add2.png");
         IconInstaller::installPushButtonIcon(ui->deleteBackupPushButton, ":/pic/delete2.png");
         ui->startBackupPushButton->setStyle(m_lightPushButtonStyle);
-        ui->saveBackupPushButton->setStyle(m_lightPushButtonStyle);
         ui->addBackupPushButton->setStyle(m_lightPushButtonStyle);
         ui->deleteBackupPushButton->setStyle(m_lightPushButtonStyle);
     }
@@ -213,11 +222,9 @@ void BTMainWindow::loadStyles()
         ui->actionLight->setChecked(false);
         this->setStyleSheet(QssInstaller::installFromFile(":/stylesheet/btmainwindow_dark.css"));
         IconInstaller::installPushButtonIcon(ui->startBackupPushButton, ":/pic/start.png");
-        IconInstaller::installPushButtonIcon(ui->saveBackupPushButton, ":/pic/save.png");
         IconInstaller::installPushButtonIcon(ui->addBackupPushButton, ":/pic/add.png");
         IconInstaller::installPushButtonIcon(ui->deleteBackupPushButton, ":/pic/delete.png");
         ui->startBackupPushButton->setStyle(m_darkPushbuttonStyle);
-        ui->saveBackupPushButton->setStyle(m_darkPushbuttonStyle);
         ui->addBackupPushButton->setStyle(m_darkPushbuttonStyle);
         ui->deleteBackupPushButton->setStyle(m_darkPushbuttonStyle);
     }
@@ -257,6 +264,7 @@ void BTMainWindow::saveConfig()
 {
     QSettings *config = new QSettings(QApplication::applicationDirPath() + NATIVE_SEPARATOR + CONFIG_FILE_NAME);
     config->setValue(CONFIG_COLORSTYLE_PATH, m_useLightStyle);
+    config->setValue(CONFIG_COPYMODE_PATH, static_cast<int>(m_copyMode));
     delete config;
 }
 
@@ -264,6 +272,7 @@ void BTMainWindow::loadConfig()
 {
     QSettings *config = new QSettings(QApplication::applicationDirPath() + NATIVE_SEPARATOR + CONFIG_FILE_NAME);
     m_useLightStyle = config->value(CONFIG_COLORSTYLE_PATH).toBool();
+    m_copyMode = static_cast<CopyMode>(config->value(CONFIG_COPYMODE_PATH).toInt());
     delete config;
 }
 
@@ -286,14 +295,25 @@ void BTMainWindow::startBackupProgress()
     progressDialog->show();
 
     emit sendBackupProgressHint("计算文件中");
+    // NOTE: Lifetime meets terminate and finished situation.
     int taskCount = 0;
     for(const QCheckBox *checkBox : *m_backupChBVector){
         if(checkBox->isChecked()){
-            CopyHelper::checkDirectoryInfo(ui->backupTable->item(pos, 2)->text(), fileCount, totalSize);
-            taskCount++;
+            if(CopyHelper::checkDirectoryInfo(ui->backupTable->item(pos, 2)->text(), ui->backupTable->item(pos, 3)->text(), fileCount, totalSize)){
+                taskCount++;
+            }
+            else{
+                progressDialog->appendLog(QString("源路径或备份路径不存在: %1 -> %2").arg(ui->backupTable->item(pos, 2)->text(),
+                                                                                    ui->backupTable->item(pos, 3)->text()));
+            }
          }
         pos++;
     }
+    if(taskCount == 0){
+        progressDialog->backupFinished();
+        return;
+    }
+    progressDialog->setTaskCount(taskCount);
     emit sendBackupProgressFileCount(fileCount);
 
     emit sendBackupProgressHint("备份中");
@@ -317,7 +337,7 @@ void BTMainWindow::startBackupProgress()
             }
 
             QThread *backupThread = new QThread();
-            BackupProgressWorker *backupWorker = new BackupProgressWorker(srcPath, dstPath, CopyMode::Force);
+            BackupProgressWorker *backupWorker = new BackupProgressWorker(srcPath, dstPath, m_copyMode);
             connect(progressDialog, &BTBackupProgressDialog::terminateBackup, backupThread, &QThread::quit);
             connect(progressDialog, &BTBackupProgressDialog::terminateBackup, backupWorker, &BackupProgressWorker::terminateBackup, Qt::DirectConnection);
 
@@ -326,15 +346,12 @@ void BTMainWindow::startBackupProgress()
             connect(backupThread, &QThread::finished, backupThread, &QThread::deleteLater);
             connect(backupThread, &QThread::finished, backupWorker, &BackupProgressWorker::deleteLater);
 
-            connect(backupWorker, &BackupProgressWorker::fileBakcup, progressDialog, &BTBackupProgressDialog::updateBackupProgress, Qt::BlockingQueuedConnection);
+            connect(backupWorker, &BackupProgressWorker::fileBakcup, progressDialog, &BTBackupProgressDialog::updateBackupProgress);
             connect(backupWorker, &BackupProgressWorker::backupFinished, this,
-                    [&taskCount, progressDialog, pos, this]()
+                    [progressDialog, pos, this]()
                     {
                         updateBackupTime(pos);
-                        taskCount--;
-                        if(taskCount == 0){
-                            progressDialog->backupFinished();
-                        }
+                        progressDialog->backupFinished();
                     });
 
             backupWorker->moveToThread(backupThread);
@@ -370,4 +387,11 @@ void BTMainWindow::deleteConfig()
         }
     }
     // TODO: Unfreeze after delete.
+    saveBackupConfig();
+}
+
+void BTMainWindow::setCopyMode(const int &copyMode)
+{
+    copyMode == 0 ? m_copyMode = CopyMode::Normal : m_copyMode = CopyMode::Force;
+    saveConfig();
 }
