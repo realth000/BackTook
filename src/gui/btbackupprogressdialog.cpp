@@ -50,6 +50,11 @@ void BTBackupProgressDialog::setTaskCount(const int &taskCount)
     m_taskCount = taskCount;
 }
 
+void BTBackupProgressDialog::appendLog(const QString &log)
+{
+    ui->logTextEdit->append(log);
+}
+
 void BTBackupProgressDialog::setHint(const QString &hint)
 {
     ui->hintLabel->setText(hint);

@@ -163,7 +163,7 @@ void BTMainWindow::initUI()
 void BTMainWindow::initWindow()
 {
     this->setMinimumSize(WINDOW_MIN_WIDTH, WINDOW_MIN_HEIGHT);
-
+    this->setWindowTitle("BackTook");
     ui->actionDark->setCheckable(true);
     ui->actionLight->setCheckable(true);
 
@@ -303,10 +303,19 @@ void BTMainWindow::startBackupProgress()
     int taskCount = 0;
     for(const QCheckBox *checkBox : *m_backupChBVector){
         if(checkBox->isChecked()){
-            CopyHelper::checkDirectoryInfo(ui->backupTable->item(pos, 2)->text(), fileCount, totalSize);
-            taskCount++;
+            if(CopyHelper::checkDirectoryInfo(ui->backupTable->item(pos, 2)->text(), ui->backupTable->item(pos, 3)->text(), fileCount, totalSize)){
+                taskCount++;
+            }
+            else{
+                progressDialog->appendLog(QString("源路径或备份路径不存在: %1 -> %2").arg(ui->backupTable->item(pos, 2)->text(),
+                                                                                    ui->backupTable->item(pos, 3)->text()));
+            }
          }
         pos++;
+    }
+    if(taskCount == 0){
+        progressDialog->backupFinished();
+        return;
     }
     progressDialog->setTaskCount(taskCount);
     emit sendBackupProgressFileCount(fileCount);

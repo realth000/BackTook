@@ -35,6 +35,7 @@ public:
     explicit BTBackupProgressDialog(QWidget *parent = nullptr, const bool &useLightStyle = true);
     ~BTBackupProgressDialog();
     void setTaskCount(const int &taskCount);
+    void appendLog(const QString &log);
 
 signals:
     void terminateBackup();

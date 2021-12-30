@@ -41,7 +41,7 @@ public:
     void setCopyMode(const CopyMode &copyMode);
     bool copyFile(const QString &srcFilePath, const QString &dstFilePath, const CopyMode &copyMode);
     void copyDirectory(const QString &srcDirPath, const QString &dstDirPath, const CopyMode &copyMode);
-    static void checkDirectoryInfo(const QString &directoryPath, qint64 &fileCount, qint64 &totalSize);
+    static bool checkDirectoryInfo(const QString &srcPath, const QString &dstPath, qint64 &fileCount, qint64 &totalSize);
     void stopCopy();
 
 signals:
