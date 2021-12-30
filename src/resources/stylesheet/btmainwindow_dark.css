@@ -58,3 +58,7 @@ QMenu{
     padding: 2px 4px 4px 2px;
     selection-background-color: #254158;
 }
+
+QCheckBox{
+    Color: #f0ffff;
+}

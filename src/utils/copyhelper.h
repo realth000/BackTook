@@ -22,6 +22,7 @@
 #include <QtCore/QDir>
 #include <QtCore/QDirIterator>
 #include <QtCore/QFile>
+#include "defines.h"
 
 #ifndef NATIVE_SEPARATOR
 #ifdef Q_OS_WINDOWS
@@ -30,11 +31,6 @@
 #define NATIVE_SEPARATOR "/"
 #endif // #ifdef Q_OS_WINDOWS
 #endif // #ifndef NATIVE_SEPARATOR
-
-enum class CopyMode : int {
-    Normal = 0,
-    Force
-};
 
 class CopyHelper : public QObject
 {

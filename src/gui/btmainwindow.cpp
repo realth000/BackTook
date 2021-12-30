@@ -38,6 +38,7 @@
 
 #define CONFIG_FILE_NAME "config.ini"
 #define CONFIG_COLORSTYLE_PATH "/Appearance/ColorStyle"
+#define CONFIG_COPYMODE_PATH "/Backup/CopyMode"
 
 BTMainWindow::BTMainWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -49,7 +50,8 @@ BTMainWindow::BTMainWindow(QWidget *parent)
       m_backupConfigSavePath(QApplication::applicationDirPath() + NATIVE_SEPARATOR + "backupConfig.json"),
       m_useLightStyle(true),
       m_darkPushbuttonStyle(new DarkPushButtonStyle),
-      m_lightPushButtonStyle(new LightPushButtonStyle)
+      m_lightPushButtonStyle(new LightPushButtonStyle),
+      m_copyMode(CopyMode::Normal)
 {
     ui->setupUi(this);
     loadConfig();
@@ -145,6 +147,8 @@ void BTMainWindow::initConnection()
                 this->m_useLightStyle = true;
                 loadStyles();
             });
+
+    connect(ui->forceBackupCheckBox, &QCheckBox::stateChanged, this, &BTMainWindow::setCopyMode);
 }
 
 void BTMainWindow::initUI()
@@ -162,6 +166,13 @@ void BTMainWindow::initWindow()
 
     ui->actionDark->setCheckable(true);
     ui->actionLight->setCheckable(true);
+
+    if(m_copyMode == CopyMode::Normal){
+        ui->forceBackupCheckBox->setChecked(false);
+    }
+    else{
+        ui->forceBackupCheckBox->setChecked(true);
+    }
 }
 
 void BTMainWindow::initBackupTable()
@@ -257,6 +268,7 @@ void BTMainWindow::saveConfig()
 {
     QSettings *config = new QSettings(QApplication::applicationDirPath() + NATIVE_SEPARATOR + CONFIG_FILE_NAME);
     config->setValue(CONFIG_COLORSTYLE_PATH, m_useLightStyle);
+    config->setValue(CONFIG_COPYMODE_PATH, static_cast<int>(m_copyMode));
     delete config;
 }
 
@@ -264,6 +276,7 @@ void BTMainWindow::loadConfig()
 {
     QSettings *config = new QSettings(QApplication::applicationDirPath() + NATIVE_SEPARATOR + CONFIG_FILE_NAME);
     m_useLightStyle = config->value(CONFIG_COLORSTYLE_PATH).toBool();
+    m_copyMode = static_cast<CopyMode>(config->value(CONFIG_COPYMODE_PATH).toInt());
     delete config;
 }
 
@@ -319,7 +332,7 @@ void BTMainWindow::startBackupProgress()
             }
 
             QThread *backupThread = new QThread();
-            BackupProgressWorker *backupWorker = new BackupProgressWorker(srcPath, dstPath, CopyMode::Force);
+            BackupProgressWorker *backupWorker = new BackupProgressWorker(srcPath, dstPath, m_copyMode);
             connect(progressDialog, &BTBackupProgressDialog::terminateBackup, backupThread, &QThread::quit);
             connect(progressDialog, &BTBackupProgressDialog::terminateBackup, backupWorker, &BackupProgressWorker::terminateBackup, Qt::DirectConnection);
 
@@ -369,4 +382,10 @@ void BTMainWindow::deleteConfig()
         }
     }
     // TODO: Unfreeze after delete.
+}
+
+void BTMainWindow::setCopyMode(const int &copyMode)
+{
+    copyMode == 0 ? m_copyMode = CopyMode::Normal : m_copyMode = CopyMode::Force;
+    saveConfig();
 }

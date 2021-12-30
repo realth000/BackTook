@@ -58,6 +58,7 @@ private:
     bool m_useLightStyle;
     DarkPushButtonStyle *m_darkPushbuttonStyle;
     LightPushButtonStyle *m_lightPushButtonStyle;
+    CopyMode m_copyMode;
 
     void saveConfig();
     void loadConfig();
@@ -79,6 +80,7 @@ private slots:
     void saveBackupConfig();
     void addConfig();
     void deleteConfig();
+    void setCopyMode(const int &copyMode);
 
 };
 #endif // BTMAINWINDOW_H

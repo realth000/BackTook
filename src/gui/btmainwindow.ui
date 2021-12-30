@@ -106,6 +106,19 @@
          </widget>
         </item>
         <item>
+         <widget class="QCheckBox" name="forceBackupCheckBox">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>30</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>覆盖文件</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <spacer name="verticalSpacer">
           <property name="orientation">
            <enum>Qt::Vertical</enum>

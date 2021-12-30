@@ -24,7 +24,8 @@
 
 BackupProgressWorker::BackupProgressWorker(const QString &srcPath, const QString &dstPath, const CopyMode &copyMode)
     : m_srcFileInfo(srcPath),
-      m_dstFileInfo(dstPath)
+      m_dstFileInfo(dstPath),
+      m_copyMode(copyMode)
 {
     m_copyHelper.setCopyMode(copyMode);
     connect(&m_copyHelper, &CopyHelper::fileCopied, this, &BackupProgressWorker::fileBakcup);
@@ -34,10 +35,10 @@ void BackupProgressWorker::startBackup()
 {
     if(m_srcFileInfo.isFile()){
         // TODO: Save CopyMode in config
-        m_copyHelper.copyFile(m_srcFileInfo.absoluteFilePath(), m_dstFileInfo.absoluteFilePath(), CopyMode::Force);
+        m_copyHelper.copyFile(m_srcFileInfo.absoluteFilePath(), m_dstFileInfo.absoluteFilePath(), m_copyMode);
     }
     else if(m_srcFileInfo.isDir()){
-        m_copyHelper.copyDirectory(m_srcFileInfo.absoluteFilePath(), m_dstFileInfo.absoluteFilePath(), CopyMode::Force);
+        m_copyHelper.copyDirectory(m_srcFileInfo.absoluteFilePath(), m_dstFileInfo.absoluteFilePath(), m_copyMode);
     }
     emit backupFinished();
 }

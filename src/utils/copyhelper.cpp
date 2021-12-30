@@ -42,7 +42,11 @@ bool CopyHelper::copyFile(const QString &srcFilePath, const QString &dstFilePath
         criticalLogger(QStringLiteral("source file not exists"), srcFilePath);
         return false;
     }
-    if(copyMode == CopyMode::Force && QFile::exists(dstFilePath)){
+    if(QFile::exists(dstFilePath)){
+        if(copyMode != CopyMode::Force){
+            criticalLogger(QStringLiteral("skip exist file"), srcFilePath);
+            return false;
+        }
         if(!QFile::remove(dstFilePath)){
             criticalLogger(QStringLiteral("source file can not overwrite"), srcFilePath);
             return false;

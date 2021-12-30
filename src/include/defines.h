@@ -31,4 +31,9 @@ struct BackupConfigObject{
 
 typedef QVector<BackupConfigObject> BackupConfigDatas;
 
+enum class CopyMode : int {
+    Normal = 0,  // Skip exist file
+    Force
+};
+
 #endif // DEFINES_H
