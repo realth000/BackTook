@@ -104,6 +104,9 @@ void BTBackupProgressDialog::initUI()
         IconInstaller::installPushButtonIcon(ui->terminatePushButton, ":/pic/cancel.png");
         ui->terminatePushButton->setStyle(m_darkPushButtonStyle);
     }
+
+    ui->swithStatePushButton->setFocusPolicy(Qt::NoFocus);
+    ui->terminatePushButton->setFocusPolicy(Qt::NoFocus);
 }
 
 void BTBackupProgressDialog::initConnection()
