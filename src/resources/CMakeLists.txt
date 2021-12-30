@@ -15,3 +15,6 @@
 
 target_sources(BackTook PRIVATE stylesheet.qrc)
 target_sources(BackTook PRIVATE pic.qrc)
+if(WIN32)
+    target_sources(BackTook PRIVATE backtook.rc)
+endif()
